@@ -1,0 +1,599 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Films — Seth</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400;1,600&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0e0d0b;
+  --s1: #161512;
+  --s2: #1e1c17;
+  --s3: #252219;
+  --gold: #c9a84c;
+  --gold-d: #7a6230;
+  --gold-f: rgba(201,168,76,0.08);
+  --cream: #e8e0ce;
+  --cream2: #a89e8a;
+  --cream3: #5a5448;
+  --border: rgba(201,168,76,0.12);
+  --border2: rgba(255,255,255,0.05);
+  --red: #c44040;
+  --blue: #4080c0;
+  --green: #40a060;
+  --purple: #9060c0;
+}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--cream);font-family:'DM Mono',monospace;font-size:13px;line-height:1.6;min-height:100vh}
+body::before{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E");pointer-events:none;z-index:999;opacity:.6}
+
+.page{max-width:1100px;margin:0 auto;padding:0 40px 100px}
+
+/* HEADER */
+header{padding:70px 0 50px;border-bottom:1px solid var(--border);margin-bottom:0;display:grid;grid-template-columns:1fr auto;align-items:end;gap:40px}
+header h1{font-family:'Cormorant Garamond',serif;font-size:72px;font-weight:300;font-style:italic;color:var(--cream);line-height:.95;letter-spacing:-1px;margin-bottom:14px}
+.h-sub{font-size:11px;letter-spacing:3px;text-transform:uppercase;color:var(--gold)}
+.h-stats{display:flex;gap:32px;text-align:right}
+.hs-n{font-family:'Cormorant Garamond',serif;font-size:36px;font-weight:300;color:var(--gold);line-height:1;display:block}
+.hs-l{font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--cream3);margin-top:3px;display:block}
+
+/* STICKY NAV */
+.snav{position:sticky;top:0;z-index:50;background:var(--bg);border-bottom:1px solid var(--border);padding:0 40px;margin:0 -40px;display:flex;gap:0;overflow-x:auto;scrollbar-width:none}
+.snav::-webkit-scrollbar{display:none}
+.snav a{font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--cream3);text-decoration:none;padding:13px 16px;white-space:nowrap;border-bottom:2px solid transparent;margin-bottom:-1px;transition:color .15s,border-color .15s}
+.snav a:hover{color:var(--cream2)}
+.snav a.on{color:var(--gold);border-bottom-color:var(--gold)}
+
+/* SECTIONS */
+.sec{padding-top:56px;margin-bottom:0}
+.sec-head{display:flex;align-items:baseline;gap:14px;margin-bottom:24px}
+.sec-title{font-family:'Cormorant Garamond',serif;font-size:30px;font-weight:300;font-style:italic;color:var(--cream);line-height:1}
+.sec-count{font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--cream3)}
+.sec-div{height:1px;background:var(--border);margin-bottom:24px;flex:1}
+.sec-note{font-size:11px;color:var(--cream3);margin-bottom:20px;line-height:1.6;padding:12px 16px;border-left:2px solid var(--border);background:var(--s1)}
+
+/* CHARTS ROW */
+.charts-row{display:grid;grid-template-columns:1fr 1fr;gap:16px;padding-top:56px}
+.cpanel{background:var(--s1);border:1px solid var(--border2);padding:28px}
+.clabel{font-size:10px;letter-spacing:3px;text-transform:uppercase;color:var(--gold);margin-bottom:22px;display:flex;align-items:center;gap:12px}
+.clabel::after{content:'';flex:1;height:1px;background:var(--border)}
+
+/* DISTRIBUTION */
+.dr{display:grid;grid-template-columns:36px 1fr 36px;align-items:center;gap:10px;margin-bottom:7px}
+.ds{font-size:11px;color:var(--gold);text-align:right}
+.dt{height:18px;background:var(--s2);position:relative;overflow:hidden}
+.df{height:100%;width:0;transition:width 1s cubic-bezier(.16,1,.3,1)}
+.df.h{background:linear-gradient(90deg,var(--gold-d),var(--gold))}
+.df.m{background:linear-gradient(90deg,#4a4438,#6a6050)}
+.df.l{background:linear-gradient(90deg,#3a2020,#6a3030)}
+.dc{font-size:11px;color:var(--cream3)}
+
+/* DECADE */
+.decr{display:grid;grid-template-columns:44px 1fr 60px;align-items:center;gap:10px;margin-bottom:9px}
+.decl{font-size:11px;color:var(--cream2);text-align:right}
+.dect{height:22px;background:var(--s2);position:relative}
+.decb{height:100%;background:var(--gold-d);width:0;transition:width 1.1s cubic-bezier(.16,1,.3,1);position:relative}
+.decb::after{content:'';position:absolute;inset:0;background:repeating-linear-gradient(90deg,transparent,transparent 6px,rgba(0,0,0,.15) 6px,rgba(0,0,0,.15) 7px)}
+.dec5{position:absolute;right:0;top:0;height:100%;background:var(--gold);opacity:.6;width:0;transition:width 1.1s cubic-bezier(.16,1,.3,1)}
+.decm{font-size:10px;color:var(--cream3);line-height:1.4}
+.decavg{color:var(--gold);font-size:12px}
+
+/* DIRECTOR CHART */
+.dir-grid{display:flex;flex-direction:column;gap:8px}
+.dir-row{display:grid;grid-template-columns:160px 1fr 48px;align-items:center;gap:12px;cursor:default}
+.dir-name{font-family:'Cormorant Garamond',serif;font-size:15px;font-weight:400;color:var(--cream);line-height:1.2}
+.dir-nat{font-size:10px;color:var(--cream3);margin-top:2px}
+.dir-track{height:28px;background:var(--s2);position:relative;overflow:hidden}
+.dir-fill{height:100%;width:0;transition:width 1.2s cubic-bezier(.16,1,.3,1);display:flex;align-items:center}
+.dir-films{position:absolute;left:8px;top:50%;transform:translateY(-50%);font-size:9px;white-space:nowrap;overflow:hidden;opacity:0;transition:opacity .2s;letter-spacing:.3px}
+.dir-track:hover .dir-films{opacity:1}
+.dir-meta{text-align:center}
+.dir-avg{font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:300;color:var(--gold);line-height:1;display:block}
+.dir-cnt{font-size:9px;color:var(--cream3);letter-spacing:1px}
+
+/* COUNTRY */
+.country-blocks{display:flex;flex-wrap:wrap;gap:2px}
+.cblock{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:16px 14px;background:var(--s1);border:1px solid var(--border2);min-width:90px;gap:5px;transition:border-color .15s;cursor:default}
+.cblock:hover{border-color:var(--border)}
+.cflag{font-size:24px;line-height:1}
+.cname{font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:var(--cream3);text-align:center}
+.cnum{font-family:'Cormorant Garamond',serif;font-size:26px;font-weight:300;color:var(--gold);line-height:1}
+.cavg{font-size:9px;color:var(--cream3)}
+
+/* FILM GRIDS */
+.g-xl{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:2px}
+.g-lg{display:grid;grid-template-columns:repeat(auto-fill,minmax(155px,1fr));gap:2px}
+.g-md{display:grid;grid-template-columns:repeat(auto-fill,minmax(135px,1fr));gap:2px}
+
+.tile{background:var(--s1);border:1px solid var(--border2);padding:13px 15px;position:relative;transition:border-color .15s,background .15s;text-decoration:none;display:block;color:inherit;border-left:2px solid transparent}
+.tile:hover{border-left-color:var(--gold);background:var(--s2)}
+.tile-num{font-size:10px;color:var(--gold-d);letter-spacing:1px;margin-bottom:5px;display:block}
+.tile-t{font-family:'Cormorant Garamond',serif;font-size:15px;font-weight:400;color:var(--cream);line-height:1.25;margin-bottom:3px}
+.tile-y{font-size:10px;color:var(--cream3);letter-spacing:1px}
+.tile-s{position:absolute;top:12px;right:12px;font-size:9px;color:var(--gold);letter-spacing:-1px}
+.tile-d{font-size:10px;color:var(--cream2);margin-top:3px}
+
+/* COMPACT LIST */
+.cols3{columns:3;column-gap:28px}
+.cols2{columns:2;column-gap:28px}
+@media(max-width:700px){.cols3{columns:2}.cols2{columns:1}}
+@media(max-width:460px){.cols3{columns:1}}
+.li{display:flex;align-items:baseline;gap:8px;padding:5px 0;border-bottom:1px solid var(--border2);break-inside:avoid;text-decoration:none;color:inherit}
+.li:hover .li-t{color:var(--gold)}
+.li-t{font-family:'Cormorant Garamond',serif;font-size:15px;font-weight:400;color:var(--cream);line-height:1.3;flex:1;transition:color .12s}
+.li-y{font-size:10px;color:var(--cream3);flex-shrink:0}
+
+/* LOWER TIERS */
+.li-m .li-t{color:var(--cream2)}
+.li-l .li-t{color:var(--cream3)}
+.li-vl .li-t{color:var(--cream3);text-decoration:line-through;text-decoration-color:rgba(90,84,72,.5)}
+
+/* SPECIAL CATEGORIES */
+.cat-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.cat-panel{background:var(--s1);border:1px solid var(--border2);padding:24px}
+.cat-title{font-size:10px;letter-spacing:3px;text-transform:uppercase;color:var(--gold);margin-bottom:18px;display:flex;align-items:center;gap:10px}
+.cat-title::after{content:'';flex:1;height:1px;background:var(--border)}
+.cat-item{display:flex;align-items:baseline;gap:8px;padding:6px 0;border-bottom:1px solid var(--border2);text-decoration:none;color:inherit}
+.cat-item:last-child{border-bottom:none}
+.cat-item:hover .ci-t{color:var(--gold)}
+.ci-t{font-family:'Cormorant Garamond',serif;font-size:15px;font-weight:400;color:var(--cream);flex:1;line-height:1.25;transition:color .12s}
+.ci-s{font-size:11px;color:var(--gold);letter-spacing:-1px;flex-shrink:0}
+.ci-d{font-size:10px;color:var(--cream3);flex-shrink:0}
+.ci-year{font-size:10px;color:var(--cream3)}
+
+/* RECENT */
+.rec-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:10px}
+.rcard{background:var(--s1);border:1px solid var(--border2);padding:14px 16px;text-decoration:none;color:inherit;display:block;transition:border-color .15s}
+.rcard:hover{border-color:var(--border)}
+.rr{font-size:11px;color:var(--gold);letter-spacing:-1px;margin-bottom:6px}
+.rt{font-family:'Cormorant Garamond',serif;font-size:16px;font-weight:400;line-height:1.2;margin-bottom:4px;color:var(--cream)}
+.rm{font-size:10px;color:var(--cream3);display:flex;align-items:center;gap:6px}
+.rwb{font-size:9px;padding:1px 6px;border:1px solid var(--border);color:var(--cream3);letter-spacing:.5px}
+
+/* LEGEND */
+.legend{display:flex;gap:20px;margin-bottom:14px;flex-wrap:wrap}
+.leg{display:flex;align-items:center;gap:6px;font-size:11px;color:var(--cream3)}
+.leg-dot{width:8px;height:8px;border-radius:50%}
+
+@media(max-width:700px){
+  .page{padding:0 20px 60px}
+  header{grid-template-columns:1fr;gap:20px}
+  header h1{font-size:48px}
+  .h-stats{justify-content:flex-start}
+  .charts-row{grid-template-columns:1fr}
+  .cat-grid{grid-template-columns:1fr}
+  .dir-row{grid-template-columns:120px 1fr 40px}
+  .dir-name{font-size:13px}
+}
+
+@keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+.sec,.charts-row{animation:fadeUp .5s ease both}
+</style>
+</head>
+<body>
+<div class="page">
+
+<header>
+  <div>
+    <div style="font-size:11px;letter-spacing:3px;text-transform:uppercase;color:var(--gold);margin-bottom:12px">Seth · Letterboxd</div>
+    <h1>Films</h1>
+    <div class="h-sub">A life in cinema</div>
+  </div>
+  <div class="h-stats">
+    <div><span class="hs-n">699</span><span class="hs-l">Watched</span></div>
+    <div><span class="hs-n">638</span><span class="hs-l">Rated</span></div>
+    <div><span class="hs-n">3.75</span><span class="hs-l">Avg ★</span></div>
+  </div>
+</header>
+
+<nav class="snav" id="snav">
+  <a href="#overview" class="on">Overview</a>
+  <a href="#directors">Directors</a>
+  <a href="#countries">Countries</a>
+  <a href="#categories">Categories</a>
+  <a href="#five-star">★★★★★</a>
+  <a href="#four-half">★★★★½</a>
+  <a href="#four-star">★★★★</a>
+  <a href="#three-star">★★★</a>
+  <a href="#two-star">★★</a>
+  <a href="#one-star">★</a>
+  <a href="#recent">Recent</a>
+</nav>
+
+<!-- OVERVIEW CHARTS -->
+<div class="charts-row" id="overview">
+  <div class="cpanel">
+    <div class="clabel">Rating distribution</div>
+    <div id="dist-chart"></div>
+  </div>
+  <div class="cpanel">
+    <div class="clabel">By decade — avg rating + % five-star</div>
+    <div class="legend">
+      <div class="leg"><div class="leg-dot" style="background:var(--gold-d)"></div>Films watched</div>
+      <div class="leg"><div class="leg-dot" style="background:var(--gold)"></div>Five-star films</div>
+    </div>
+    <div id="decade-chart"></div>
+  </div>
+</div>
+
+<!-- DIRECTORS -->
+<div class="sec" id="directors">
+  <div class="sec-head">
+    <div class="sec-title">Favorite directors</div>
+    <div class="sec-div"></div>
+  </div>
+  <div class="sec-note">Bar length = films watched. Gold overlay = five-star films. Hover for titles.</div>
+  <div class="cpanel" style="margin-bottom:0">
+    <div class="dir-grid" id="dir-chart"></div>
+  </div>
+</div>
+
+<!-- COUNTRIES -->
+<div class="sec" id="countries">
+  <div class="sec-head">
+    <div class="sec-title">Country of origin</div>
+    <div class="sec-count">top-rated films</div>
+    <div class="sec-div"></div>
+  </div>
+  <div class="country-blocks" id="country-blocks"></div>
+</div>
+
+<!-- SPECIAL CATEGORIES -->
+<div class="sec" id="categories">
+  <div class="sec-head">
+    <div class="sec-title">Special categories</div>
+    <div class="sec-div"></div>
+  </div>
+  <div class="cat-grid" id="cat-grid"></div>
+</div>
+
+<!-- FIVE STAR -->
+<div class="sec" id="five-star">
+  <div class="sec-head">
+    <div class="sec-title">Five stars</div>
+    <div class="sec-count">76 films</div>
+    <div class="sec-div"></div>
+  </div>
+  <div class="sec-note">The first 44 are my official all-time favorites list, numbered by rank. All others are simply films I consider perfect.</div>
+  <div class="g-xl" id="g-five"></div>
+</div>
+
+<!-- FOUR AND A HALF -->
+<div class="sec" id="four-half">
+  <div class="sec-head">
+    <div class="sec-title">Four and a half</div>
+    <div class="sec-count">89 films</div>
+    <div class="sec-div"></div>
+  </div>
+  <div class="g-lg" id="g-half"></div>
+</div>
+
+<!-- FOUR STAR -->
+<div class="sec" id="four-star">
+  <div class="sec-head">
+    <div class="sec-title">Four stars</div>
+    <div class="sec-count">227 films</div>
+    <div class="sec-div"></div>
+  </div>
+  <div class="cols3" id="g-four"></div>
+</div>
+
+<!-- THREE STAR -->
+<div class="sec" id="three-star">
+  <div class="sec-head">
+    <div class="sec-title">Three stars</div>
+    <div class="sec-count">103 films — good, not great</div>
+    <div class="sec-div"></div>
+  </div>
+  <div class="cols3" id="g-three"></div>
+</div>
+
+<!-- TWO STAR -->
+<div class="sec" id="two-star">
+  <div class="sec-head">
+    <div class="sec-title">Two stars and below</div>
+    <div class="sec-count">74 films</div>
+    <div class="sec-div"></div>
+  </div>
+  <div class="cols2" id="g-low"></div>
+</div>
+
+<!-- ONE STAR -->
+<div class="sec" id="one-star">
+  <div class="sec-head">
+    <div class="sec-title">One star</div>
+    <div class="sec-count">10 films — the worst</div>
+    <div class="sec-div"></div>
+  </div>
+  <div class="cols2" id="g-one"></div>
+</div>
+
+<!-- RECENT -->
+<div class="sec" id="recent">
+  <div class="sec-head">
+    <div class="sec-title">Recently watched</div>
+    <div class="sec-count">rated 4★ and above</div>
+    <div class="sec-div"></div>
+  </div>
+  <div class="rec-grid" id="g-recent"></div>
+</div>
+
+</div><!-- /page -->
+
+<script>
+// ── DATA ─────────────────────────────────────────────────────────────────────
+
+const FIVES = [{"name":"The Conversation","year":1974,"url":"https://boxd.it/2a38"},{"name":"Her","year":2013,"url":"https://boxd.it/4O24"},{"name":"Pan's Labyrinth","year":2006,"url":"https://boxd.it/28No"},{"name":"Phantom Thread","year":2017,"url":"https://boxd.it/e4uc"},{"name":"Portrait of a Lady on Fire","year":2019,"url":"https://boxd.it/jkPq"},{"name":"Vertigo","year":1958,"url":"https://boxd.it/2apI"},{"name":"Barry Lyndon","year":1975,"url":"https://boxd.it/25A2"},{"name":"The Third Man","year":1949,"url":"https://boxd.it/294E"},{"name":"In the Mood for Love","year":2000,"url":"https://boxd.it/29tE"},{"name":"Rear Window","year":1954,"url":"https://boxd.it/2a6Q"},{"name":"Moonlight","year":2016,"url":"https://boxd.it/d6bE"},{"name":"Being There","year":1979,"url":"https://boxd.it/1WxS"},{"name":"WALL·E","year":2008,"url":"https://boxd.it/1VEo"},{"name":"Sing Street","year":2016,"url":"https://boxd.it/cOo6"},{"name":"Boyhood","year":2014,"url":"https://boxd.it/3178"},{"name":"Nope","year":2022,"url":"https://boxd.it/sDCe"},{"name":"Roma","year":2018,"url":"https://boxd.it/f69M"},{"name":"Persona","year":1966,"url":"https://boxd.it/29B4"},{"name":"Fargo","year":1996,"url":"https://boxd.it/2aHM"},{"name":"Toy Story 4","year":2019,"url":"https://boxd.it/9ALu"},{"name":"The Graduate","year":1967,"url":"https://boxd.it/18Im"},{"name":"The Apartment","year":1960,"url":"https://boxd.it/2aGE"},{"name":"A Woman Under the Influence","year":1974,"url":"https://boxd.it/1myg"},{"name":"Do the Right Thing","year":1989,"url":"https://boxd.it/29gA"},{"name":"Notorious","year":1946,"url":"https://boxd.it/2aDK"},{"name":"Get Out","year":2017,"url":"https://boxd.it/eOCm"},{"name":"High and Low","year":1963,"url":"https://boxd.it/1RSc"},{"name":"Secrets & Lies","year":1996,"url":"https://boxd.it/1UuC"},{"name":"The Lobster","year":2015,"url":"https://boxd.it/7tnw"},{"name":"The Naked Gun: From the Files of Police Squad!","year":1988,"url":"https://boxd.it/18YE"},{"name":"The 39 Steps","year":1935,"url":"https://boxd.it/2aKc"},{"name":"Ratatouille","year":2007,"url":"https://boxd.it/27ww"},{"name":"Black Narcissus","year":1947,"url":"https://boxd.it/1Kce"},{"name":"The 400 Blows","year":1959,"url":"https://boxd.it/2b1C"},{"name":"The Empire Strikes Back","year":1980,"url":"https://boxd.it/27Vw"},{"name":"Psycho","year":1960,"url":"https://boxd.it/2ab2"},{"name":"The Beatles: Get Back","year":2021,"url":"https://boxd.it/xo7A"},{"name":"We Are Who We Are","year":2020,"url":"https://boxd.it/n6GW"},{"name":"I May Destroy You","year":2020,"url":"https://boxd.it/qX9i"},{"name":"Chernobyl","year":2019,"url":"https://boxd.it/mkbG"},{"name":"The Florida Project","year":2017,"url":"https://boxd.it/dMG0"},{"name":"Carol","year":2015,"url":"https://boxd.it/7DPK"},{"name":"Whiplash","year":2014,"url":"https://boxd.it/7bQA"},{"name":"The Master","year":2012,"url":"https://boxd.it/2cBG"},{"name":"There Will Be Blood","year":2007,"url":"https://boxd.it/20Z2"},{"name":"Children of Men","year":2006,"url":"https://boxd.it/1Y2i"},{"name":"Before Sunset","year":2004,"url":"https://boxd.it/2bcg"},{"name":"Mulholland Drive","year":2001,"url":"https://boxd.it/297o"},{"name":"Best in Show","year":2000,"url":"https://boxd.it/1Pqq"},{"name":"Hoop Dreams","year":1994,"url":"https://boxd.it/1Opc"},{"name":"The Fugitive","year":1993,"url":"https://boxd.it/230G"},{"name":"Twin Peaks: Fire Walk with Me","year":1992,"url":"https://boxd.it/27Qw"},{"name":"The Muppet Christmas Carol","year":1992,"url":"https://boxd.it/1WgC"},{"name":"Malcolm X","year":1992,"url":"https://boxd.it/27WE"},{"name":"Terminator 2: Judgment Day","year":1991,"url":"https://boxd.it/2aGY"},{"name":"Twin Peaks","year":1989,"url":"https://boxd.it/g8pk"},{"name":"The Princess Bride","year":1987,"url":"https://boxd.it/26EY"},{"name":"Stop Making Sense","year":1984,"url":"https://boxd.it/1ygo"},{"name":"Starman","year":1984,"url":"https://boxd.it/1Y6O"},{"name":"Amadeus","year":1984,"url":"https://boxd.it/2aH8"},{"name":"Star Wars","year":1977,"url":"https://boxd.it/72s"},{"name":"Monty Python and the Holy Grail","year":1975,"url":"https://boxd.it/29GI"},{"name":"Nashville","year":1975,"url":"https://boxd.it/25GE"},{"name":"Cries and Whispers","year":1972,"url":"https://boxd.it/1WK8"},{"name":"The Godfather","year":1972,"url":"https://boxd.it/2aNK"},{"name":"Willy Wonka & the Chocolate Factory","year":1971,"url":"https://boxd.it/2aLu"},{"name":"2001: A Space Odyssey","year":1968,"url":"https://boxd.it/2bf0"},{"name":"PlayTime","year":1967,"url":"https://boxd.it/1WLK"},{"name":"Dr. Strangelove or: How I Learned to Stop Worrying and Love the Bomb","year":1964,"url":"https://boxd.it/29eY"},{"name":"The Birds","year":1963,"url":"https://boxd.it/2a6m"},{"name":"North by Northwest","year":1959,"url":"https://boxd.it/2aRM"},{"name":"The Night of the Hunter","year":1955,"url":"https://boxd.it/25HW"},{"name":"Strangers on a Train","year":1951,"url":"https://boxd.it/29tk"},{"name":"Sunset Boulevard","year":1950,"url":"https://boxd.it/2a20"},{"name":"Double Indemnity","year":1944,"url":"https://boxd.it/297I"},{"name":"Shadow of a Doubt","year":1943,"url":"https://boxd.it/1BtA"}];
+
+const HALVES = [{"name":"Adolescence","year":2025,"url":"https://boxd.it/TFGw"},{"name":"Sinners","year":2025,"url":"https://boxd.it/KQMM"},{"name":"One Battle After Another","year":2025,"url":"https://boxd.it/DUHM"},{"name":"Hamnet","year":2025,"url":"https://boxd.it/woVy"},{"name":"Eephus","year":2024,"url":"https://boxd.it/KzLW"},{"name":"Nickel Boys","year":2024,"url":"https://boxd.it/CStQ"},{"name":"On Becoming a Guinea Fowl","year":2024,"url":"https://boxd.it/EXzS"},{"name":"Poor Things","year":2023,"url":"https://boxd.it/tNWU"},{"name":"Spider-Man: Across the Spider-Verse","year":2023,"url":"https://boxd.it/kSz4"},{"name":"Killers of the Flower Moon","year":2023,"url":"https://boxd.it/gHp0"},{"name":"Anatomy of a Fall","year":2023,"url":"https://boxd.it/yuDE"},{"name":"The Zone of Interest","year":2023,"url":"https://boxd.it/gJsA"},{"name":"TÁR","year":2022,"url":"https://boxd.it/uNIA"},{"name":"The Banshees of Inisherin","year":2022,"url":"https://boxd.it/p7XS"},{"name":"Triangle of Sadness","year":2022,"url":"https://boxd.it/hXlq"},{"name":"Aftersun","year":2022,"url":"https://boxd.it/Arw0"},{"name":"Decision to Leave","year":2022,"url":"https://boxd.it/qp9e"},{"name":"Pig","year":2021,"url":"https://boxd.it/nzoW"},{"name":"Summer of Soul (...Or, When the Revolution Could Not Be Televised)","year":2021,"url":"https://boxd.it/tbhu"},{"name":"The Underground Railroad","year":2021,"url":"https://boxd.it/u9M8"},{"name":"Mare of Easttown","year":2021,"url":"https://boxd.it/u2h8"},{"name":"Wolfwalkers","year":2020,"url":"https://boxd.it/fGrC"},{"name":"Lovers Rock","year":2020,"url":"https://boxd.it/Cpn0"},{"name":"ZeroZeroZero","year":2020,"url":"https://boxd.it/pLDe"},{"name":"Parasite","year":2019,"url":"https://boxd.it/hTha"},{"name":"Sound of Metal","year":2019,"url":"https://boxd.it/i7Q4"},{"name":"The Lighthouse","year":2019,"url":"https://boxd.it/icFU"},{"name":"Spider-Man: Into the Spider-Verse","year":2018,"url":"https://boxd.it/azpY"},{"name":"The Favourite","year":2018,"url":"https://boxd.it/d2hI"},{"name":"If Beale Street Could Talk","year":2018,"url":"https://boxd.it/gGhu"},{"name":"Sharp Objects","year":2018,"url":"https://boxd.it/j3NM"},{"name":"The Handmaiden","year":2016,"url":"https://boxd.it/948A"},{"name":"20th Century Women","year":2016,"url":"https://boxd.it/bqU6"},{"name":"Arrival","year":2016,"url":"https://boxd.it/aNGk"},{"name":"Gravity","year":2013,"url":"https://boxd.it/GZY"},{"name":"12 Years a Slave","year":2013,"url":"https://boxd.it/2D2e"},{"name":"Inside Llewyn Davis","year":2013,"url":"https://boxd.it/34Ro"},{"name":"Toy Story 3","year":2010,"url":"https://boxd.it/1WRe"},{"name":"The Social Network","year":2010,"url":"https://boxd.it/17ue"},{"name":"The Hurt Locker","year":2008,"url":"https://boxd.it/1Soi"},{"name":"Zodiac","year":2007,"url":"https://boxd.it/27MO"},{"name":"Once","year":2007,"url":"https://boxd.it/22GG"},{"name":"The Departed","year":2006,"url":"https://boxd.it/28MA"},{"name":"The Prestige","year":2006,"url":"https://boxd.it/293w"},{"name":"Eternal Sunshine of the Spotless Mind","year":2004,"url":"https://boxd.it/6YK"},{"name":"Howl's Moving Castle","year":2004,"url":"https://boxd.it/23De"},{"name":"Kill Bill: Vol. 2","year":2004,"url":"https://boxd.it/2au4"},{"name":"Lost in Translation","year":2003,"url":"https://boxd.it/2b0E"},{"name":"Catch Me If You Can","year":2002,"url":"https://boxd.it/29VS"},{"name":"Gosford Park","year":2001,"url":"https://boxd.it/239e"},{"name":"Sexy Beast","year":2000,"url":"https://boxd.it/1SZS"},{"name":"Ratcatcher","year":1999,"url":"https://boxd.it/1mSg"},{"name":"Eyes Wide Shut","year":1999,"url":"https://boxd.it/2axs"},{"name":"The Insider","year":1999,"url":"https://boxd.it/1ZoE"},{"name":"The Straight Story","year":1999,"url":"https://boxd.it/2ass"},{"name":"Boogie Nights","year":1997,"url":"https://boxd.it/23um"},{"name":"Romeo + Juliet","year":1996,"url":"https://boxd.it/2ama"},{"name":"Waiting for Guffman","year":1996,"url":"https://boxd.it/1K4E"},{"name":"Before Sunrise","year":1995,"url":"https://boxd.it/2bcU"},{"name":"Dear Diary","year":1993,"url":"https://boxd.it/1vT8"},{"name":"The Age of Innocence","year":1993,"url":"https://boxd.it/1WgM"},{"name":"The Remains of the Day","year":1993,"url":"https://boxd.it/291A"},{"name":"The Silence of the Lambs","year":1991,"url":"https://boxd.it/2aHW"},{"name":"Defending Your Life","year":1991,"url":"https://boxd.it/1SkK"},{"name":"My Neighbor Totoro","year":1988,"url":"https://boxd.it/20eA"},{"name":"Stand by Me","year":1986,"url":"https://boxd.it/2aOe"},{"name":"Paris, Texas","year":1984,"url":"https://boxd.it/29Ts"},{"name":"E.T. the Extra-Terrestrial","year":1982,"url":"https://boxd.it/2a1G"},{"name":"The King of Comedy","year":1982,"url":"https://boxd.it/2aJS"},{"name":"Thief","year":1981,"url":"https://boxd.it/1TEc"},{"name":"Autumn Sonata","year":1978,"url":"https://boxd.it/1Rio"},{"name":"The Killing of a Chinese Bookie","year":1976,"url":"https://boxd.it/1hS6"},{"name":"Mikey and Nicky","year":1976,"url":"https://boxd.it/iL4"},{"name":"Dog Day Afternoon","year":1975,"url":"https://boxd.it/29bg"},{"name":"Chinatown","year":1974,"url":"https://boxd.it/29vU"},{"name":"The Long Goodbye","year":1973,"url":"https://boxd.it/281O"},{"name":"Solaris","year":1972,"url":"https://boxd.it/2a2Y"},{"name":"The Last Picture Show","year":1971,"url":"https://boxd.it/1weg"},{"name":"McCabe & Mrs. Miller","year":1971,"url":"https://boxd.it/1ooC"},{"name":"Blow-Up","year":1966,"url":"https://boxd.it/2966"},{"name":"8½","year":1963,"url":"https://boxd.it/2aqm"},{"name":"Cléo from 5 to 7","year":1962,"url":"https://boxd.it/2agm"},{"name":"Black Orpheus","year":1959,"url":"https://boxd.it/11PU"},{"name":"Anatomy of a Murder","year":1959,"url":"https://boxd.it/2baa"},{"name":"12 Angry Men","year":1957,"url":"https://boxd.it/2auI"},{"name":"The Seventh Seal","year":1957,"url":"https://boxd.it/2ahO"},{"name":"A Face in the Crowd","year":1957,"url":"https://boxd.it/2lyc"},{"name":"Rome, Open City","year":1945,"url":"https://boxd.it/2aD6"},{"name":"The Passion of Joan of Arc","year":1928,"url":"https://boxd.it/29DO"}];
+
+const FOURS = [{"name":"Mickey 17","year":2025,"url":"https://boxd.it/q1Dk"},{"name":"Superman","year":2025,"url":"https://boxd.it/E9IU"},{"name":"Black Bag","year":2025,"url":"https://boxd.it/KRbM"},{"name":"Weapons","year":2025,"url":"https://boxd.it/EMTM"},{"name":"Twinless","year":2025,"url":"https://boxd.it/LkKc"},{"name":"It Was Just an Accident","year":2025,"url":"https://boxd.it/TX2k"},{"name":"Bugonia","year":2025,"url":"https://boxd.it/qeWY"},{"name":"Sorry, Baby","year":2025,"url":"https://boxd.it/JKNi"},{"name":"Wake Up Dead Man","year":2025,"url":"https://boxd.it/uAKS"},{"name":"28 Years Later","year":2025,"url":"https://boxd.it/FEGM"},{"name":"Train Dreams","year":2025,"url":"https://boxd.it/LdDo"},{"name":"Marty Supreme","year":2025,"url":"https://boxd.it/Off0"},{"name":"The Naked Gun","year":2025,"url":"https://boxd.it/Da9k"},{"name":"Roofman","year":2025,"url":"https://boxd.it/LcIW"},{"name":"The Testament of Ann Lee","year":2025,"url":"https://boxd.it/RTTU"},{"name":"Die My Love","year":2025,"url":"https://boxd.it/D5cI"},{"name":"Inside Out 2","year":2024,"url":"https://boxd.it/CFrC"},{"name":"Love Lies Bleeding","year":2024,"url":"https://boxd.it/zN4q"},{"name":"Civil War","year":2024,"url":"https://boxd.it/z1jW"},{"name":"I Saw the TV Glow","year":2024,"url":"https://boxd.it/woVe"},{"name":"Rebel Ridge","year":2024,"url":"https://boxd.it/nZum"},{"name":"Challengers","year":2024,"url":"https://boxd.it/zld0"},{"name":"Beatles '64","year":2024,"url":"https://boxd.it/QMwW"},{"name":"The Wild Robot","year":2024,"url":"https://boxd.it/IWFy"},{"name":"A Real Pain","year":2024,"url":"https://boxd.it/CjNG"},{"name":"Anora","year":2024,"url":"https://boxd.it/Egcw"},{"name":"The Brutalist","year":2024,"url":"https://boxd.it/k4BO"},{"name":"Queer","year":2024,"url":"https://boxd.it/E4RW"},{"name":"Conclave","year":2024,"url":"https://boxd.it/AO8q"},{"name":"Barbie","year":2023,"url":"https://boxd.it/bCLK"},{"name":"Oppenheimer","year":2023,"url":"https://boxd.it/wUow"},{"name":"BEEF","year":2023,"url":"https://boxd.it/FPsm"},{"name":"May December","year":2023,"url":"https://boxd.it/vEE2"},{"name":"The Pigeon Tunnel","year":2023,"url":"https://boxd.it/HIzE"},{"name":"Godzilla Minus One","year":2023,"url":"https://boxd.it/zu4c"},{"name":"Fallen Leaves","year":2023,"url":"https://boxd.it/Bgew"},{"name":"Past Lives","year":2023,"url":"https://boxd.it/oNB8"},{"name":"How to Have Sex","year":2023,"url":"https://boxd.it/EFIM"},{"name":"Sing Sing","year":2023,"url":"https://boxd.it/HIBA"},{"name":"The Menu","year":2022,"url":"https://boxd.it/lScm"},{"name":"The Northman","year":2022,"url":"https://boxd.it/nK2s"},{"name":"Glass Onion","year":2022,"url":"https://boxd.it/oCkK"},{"name":"Everything Everywhere All at Once","year":2022,"url":"https://boxd.it/jUk4"},{"name":"Turning Red","year":2022,"url":"https://boxd.it/ipkq"},{"name":"Suzume","year":2022,"url":"https://boxd.it/yv7Y"},{"name":"The Lost Daughter","year":2021,"url":"https://boxd.it/kgww"},{"name":"The Power of the Dog","year":2021,"url":"https://boxd.it/m99E"},{"name":"The Velvet Underground","year":2021,"url":"https://boxd.it/jPXA"},{"name":"Judas and the Black Messiah","year":2021,"url":"https://boxd.it/lsew"},{"name":"Licorice Pizza","year":2021,"url":"https://boxd.it/qTKY"},{"name":"The Tragedy of Macbeth","year":2021,"url":"https://boxd.it/lMi4"},{"name":"Spencer","year":2021,"url":"https://boxd.it/qPMG"},{"name":"Soul","year":2020,"url":"https://boxd.it/ioLA"},{"name":"I'm Thinking of Ending Things","year":2020,"url":"https://boxd.it/i4IQ"},{"name":"Nomadland","year":2020,"url":"https://boxd.it/lnRy"},{"name":"Minari","year":2020,"url":"https://boxd.it/mL9M"},{"name":"The Forty-Year-Old Version","year":2020,"url":"https://boxd.it/mYXq"},{"name":"Another Round","year":2020,"url":"https://boxd.it/lkba"},{"name":"Promising Young Woman","year":2020,"url":"https://boxd.it/loRE"},{"name":"The Half of It","year":2020,"url":"https://boxd.it/m0T4"},{"name":"Palm Springs","year":2020,"url":"https://boxd.it/lCXQ"},{"name":"Knives Out","year":2019,"url":"https://boxd.it/jWEA"},{"name":"Once Upon a Time... in Hollywood","year":2019,"url":"https://boxd.it/gH0O"},{"name":"Midsommar","year":2019,"url":"https://boxd.it/jhxe"},{"name":"Us","year":2019,"url":"https://boxd.it/gnV6"},{"name":"The Irishman","year":2019,"url":"https://boxd.it/dYOq"},{"name":"John Wick: Chapter 3 – Parabellum","year":2019,"url":"https://boxd.it/gmFw"},{"name":"The Vast of Night","year":2019,"url":"https://boxd.it/kJyc"},{"name":"The Assistant","year":2019,"url":"https://boxd.it/neWo"},{"name":"BlacKkKlansman","year":2018,"url":"https://boxd.it/hxL8"},{"name":"Isle of Dogs","year":2018,"url":"https://boxd.it/dZrW"},{"name":"Sorry to Bother You","year":2018,"url":"https://boxd.it/f21E"},{"name":"Vice","year":2018,"url":"https://boxd.it/fcFY"},{"name":"Suspiria","year":2018,"url":"https://boxd.it/cioI"},{"name":"Her Smell","year":2018,"url":"https://boxd.it/iT5q"},{"name":"Annihilation","year":2018,"url":"https://boxd.it/9yzm"},{"name":"Call Me by Your Name","year":2017,"url":"https://boxd.it/dYmm"},{"name":"Thor: Ragnarok","year":2017,"url":"https://boxd.it/8MHi"},{"name":"Coco","year":2017,"url":"https://boxd.it/bYJQ"},{"name":"Star Wars: The Last Jedi","year":2017,"url":"https://boxd.it/5xme"},{"name":"Moonrise Kingdom","year":2012,"url":""},{"name":"The Dark Knight","year":2008,"url":""},{"name":"No Country for Old Men","year":2007,"url":""},{"name":"Children of Men","year":2006,"url":""},{"name":"Brokeback Mountain","year":2005,"url":""},{"name":"Eternal Sunshine of the Spotless Mind","year":2004,"url":""},{"name":"City of God","year":2002,"url":""},{"name":"Spirited Away","year":2001,"url":""},{"name":"Requiem for a Dream","year":2000,"url":""},{"name":"Run Lola Run","year":1998,"url":""},{"name":"L.A. Confidential","year":1997,"url":""},{"name":"Heat","year":1995,"url":""},{"name":"Pulp Fiction","year":1994,"url":""},{"name":"Schindler's List","year":1993,"url":""},{"name":"JFK","year":1991,"url":""},{"name":"GoodFellas","year":1990,"url":""},{"name":"Full Metal Jacket","year":1987,"url":""},{"name":"Blue Velvet","year":1986,"url":""},{"name":"Ran","year":1985,"url":""},{"name":"Blood Simple","year":1984,"url":""},{"name":"Scarface","year":1983,"url":""},{"name":"Blade Runner","year":1982,"url":""},{"name":"Raging Bull","year":1980,"url":""},{"name":"Apocalypse Now","year":1979,"url":""},{"name":"Annie Hall","year":1977,"url":""},{"name":"Taxi Driver","year":1976,"url":""},{"name":"Chinatown","year":1974,"url":""},{"name":"The Exorcist","year":1973,"url":""},{"name":"Deliverance","year":1972,"url":""},{"name":"McCabe & Mrs. Miller","year":1971,"url":""},{"name":"M*A*S*H","year":1970,"url":""},{"name":"Midnight Cowboy","year":1969,"url":""},{"name":"2001: A Space Odyssey","year":1968,"url":""},{"name":"Bob & Carol & Ted & Alice","year":1969,"url":""},{"name":"Cool Runnings","year":1993,"url":""},{"name":"Spider-Man: Homecoming","year":2017,"url":""},{"name":"Pickpocket","year":1959,"url":""}];
+
+const THREES = [{"name":"KPop Demon Hunters","year":2025,"url":""},{"name":"Orion and the Dark","year":2024,"url":""},{"name":"Flow","year":2024,"url":""},{"name":"The Substance","year":2024,"url":""},{"name":"Yuck!","year":2024,"url":""},{"name":"Friendship","year":2024,"url":""},{"name":"Bottoms","year":2023,"url":""},{"name":"Wonka","year":2023,"url":""},{"name":"American Fiction","year":2023,"url":""},{"name":"The Little Mermaid","year":2023,"url":""},{"name":"Leave the World Behind","year":2023,"url":""},{"name":"Emily the Criminal","year":2022,"url":""},{"name":"Babylon","year":2022,"url":""},{"name":"Annette","year":2021,"url":""},{"name":"Don't Look Up","year":2021,"url":""},{"name":"Dune","year":2021,"url":""},{"name":"Belfast","year":2021,"url":""},{"name":"Spider-Man: No Way Home","year":2021,"url":""},{"name":"The Trial of the Chicago 7","year":2020,"url":""},{"name":"Happiest Season","year":2020,"url":""},{"name":"Jojo Rabbit","year":2019,"url":""},{"name":"Marriage Story","year":2019,"url":""},{"name":"Booksmart","year":2019,"url":""},{"name":"Captain Marvel","year":2019,"url":""},{"name":"Yesterday","year":2019,"url":""},{"name":"Joker","year":2019,"url":""},{"name":"Ford v Ferrari","year":2019,"url":""},{"name":"Spider-Man: Far From Home","year":2019,"url":""},{"name":"Black Panther","year":2018,"url":""},{"name":"Hereditary","year":2018,"url":""},{"name":"A Quiet Place","year":2018,"url":""},{"name":"Ready Player One","year":2018,"url":""},{"name":"The Ballad of Buster Scruggs","year":2018,"url":""},{"name":"Blade Runner 2049","year":2017,"url":""},{"name":"The Shape of Water","year":2017,"url":""},{"name":"Guardians of the Galaxy Vol. 2","year":2017,"url":""},{"name":"Logan","year":2017,"url":""},{"name":"I, Tonya","year":2017,"url":""},{"name":"La La Land","year":2016,"url":""},{"name":"Captain America: Civil War","year":2016,"url":""},{"name":"Zootopia","year":2016,"url":""},{"name":"Mad Max: Fury Road","year":2015,"url":""},{"name":"Ant-Man","year":2015,"url":""},{"name":"Steve Jobs","year":2015,"url":""},{"name":"The Revenant","year":2015,"url":""},{"name":"Birdman","year":2014,"url":""},{"name":"Inherent Vice","year":2014,"url":""},{"name":"The Wolf of Wall Street","year":2013,"url":""},{"name":"Snowpiercer","year":2013,"url":""},{"name":"American Hustle","year":2013,"url":""},{"name":"The Great Gatsby","year":2013,"url":""},{"name":"Django Unchained","year":2012,"url":""},{"name":"The Perks of Being a Wallflower","year":2012,"url":""},{"name":"Inception","year":2010,"url":""},{"name":"Inglourious Basterds","year":2009,"url":""},{"name":"Up","year":2009,"url":""},{"name":"Fantastic Mr. Fox","year":2009,"url":""},{"name":"Dogtooth","year":2009,"url":""},{"name":"Synecdoche, New York","year":2008,"url":""},{"name":"Wendy and Lucy","year":2008,"url":""},{"name":"Idiocracy","year":2006,"url":""},{"name":"Batman Begins","year":2005,"url":""},{"name":"The Lord of the Rings: The Return of the King","year":2003,"url":""},{"name":"School of Rock","year":2003,"url":""},{"name":"The Lord of the Rings: The Two Towers","year":2002,"url":""},{"name":"The Lord of the Rings: The Fellowship of the Ring","year":2001,"url":""},{"name":"Monsters, Inc.","year":2001,"url":""},{"name":"Amélie","year":2001,"url":""},{"name":"American Beauty","year":1999,"url":""},{"name":"He Got Game","year":1998,"url":""},{"name":"Good Will Hunting","year":1997,"url":""},{"name":"Happy Gilmore","year":1996,"url":""},{"name":"Apollo 13","year":1995,"url":""},{"name":"Chungking Express","year":1994,"url":""},{"name":"Dead Poets Society","year":1989,"url":""},{"name":"Labyrinth","year":1986,"url":""},{"name":"Blood Simple","year":1984,"url":""},{"name":"A Christmas Story","year":1983,"url":""},{"name":"WarGames","year":1983,"url":""},{"name":"Edward Scissorhands","year":1990,"url":""},{"name":"Miller's Crossing","year":1990,"url":""}];
+
+const TWO_HALVES = [{"name":"Eddington","year":2025,"url":""},{"name":"Wicked","year":2024,"url":""},{"name":"Juror #2","year":2024,"url":""},{"name":"Are You There God? It's Me, Margaret.","year":2023,"url":""},{"name":"Saltburn","year":2023,"url":""},{"name":"Teenage Mutant Ninja Turtles: Mutant Mayhem","year":2023,"url":""},{"name":"Causeway","year":2022,"url":""},{"name":"Top Gun: Maverick","year":2022,"url":""},{"name":"Ma Rainey's Black Bottom","year":2020,"url":""},{"name":"One Night in Miami...","year":2020,"url":""},{"name":"Star Wars: The Rise of Skywalker","year":2019,"url":""},{"name":"Lady Bird","year":2017,"url":""},{"name":"Hail, Caesar!","year":2016,"url":""},{"name":"Deadpool","year":2016,"url":""},{"name":"Avengers: Age of Ultron","year":2015,"url":""},{"name":"Guardians of the Galaxy","year":2014,"url":""},{"name":"Captain America: The Winter Soldier","year":2014,"url":""},{"name":"Life of Pi","year":2012,"url":""},{"name":"The King's Speech","year":2010,"url":""},{"name":"Burn After Reading","year":2008,"url":""},{"name":"Harry Potter and the Philosopher's Stone","year":2001,"url":""},{"name":"Run Lola Run","year":1998,"url":""},{"name":"Jumanji","year":1995,"url":""},{"name":"Glengarry Glen Ross","year":1992,"url":""},{"name":"American Graffiti","year":1973,"url":""}];
+
+const TWOS = [{"name":"A Minecraft Movie","year":2025,"url":""},{"name":"Jingle Bell Heist","year":2025,"url":""},{"name":"Next Goal Wins","year":2023,"url":""},{"name":"Beautiful Men","year":2023,"url":""},{"name":"Black Panther: Wakanda Forever","year":2022,"url":""},{"name":"CODA","year":2021,"url":""},{"name":"Hamilton","year":2020,"url":""},{"name":"Mank","year":2020,"url":""},{"name":"Avengers: Infinity War","year":2018,"url":""},{"name":"Incredibles 2","year":2018,"url":""},{"name":"The Post","year":2017,"url":""},{"name":"Doctor Strange","year":2016,"url":""},{"name":"Pitch Perfect 2","year":2015,"url":""},{"name":"The Imitation Game","year":2014,"url":""},{"name":"The Theory of Everything","year":2014,"url":""},{"name":"The Help","year":2011,"url":""},{"name":"Gran Torino","year":2008,"url":""},{"name":"Walk the Line","year":2005,"url":""},{"name":"The Incredibles","year":2004,"url":""},{"name":"Mystic River","year":2003,"url":""},{"name":"Star Wars: Episode I – The Phantom Menace","year":1999,"url":""},{"name":"Air Bud: Golden Receiver","year":1998,"url":""},{"name":"Air Bud","year":1997,"url":""}];
+
+const ONES = [{"name":"Elvis","year":2022,"url":""},{"name":"Frozen II","year":2019,"url":""},{"name":"Bohemian Rhapsody","year":2018,"url":""},{"name":"Wonder Woman","year":2017,"url":""},{"name":"Fantastic Beasts and Where to Find Them","year":2016,"url":""},{"name":"Tangled","year":2010,"url":""},{"name":"Mamma Mia!","year":2008,"url":""},{"name":"Star Wars: Episode III – Revenge of the Sith","year":2005,"url":""},{"name":"Star Wars: Episode II – Attack of the Clones","year":2002,"url":""},{"name":"Air Bud: World Pup","year":2000,"url":""}];
+
+const DIST = [["5",76],["4.5",89],["4",227],["3.5",69],["3",103],["2.5",36],["2",25],["1.5",3],["1",10]];
+
+const DECADES = [{"decade":1940,"count":11,"avg":4.5,"fives":5,"fourplus":11},{"decade":1950,"count":18,"avg":4.5,"fives":7,"fourplus":17},{"decade":1960,"count":18,"avg":4.58,"fives":9,"fourplus":18},{"decade":1970,"count":36,"avg":4.33,"fives":10,"fourplus":33},{"decade":1980,"count":42,"avg":4.08,"fives":8,"fourplus":33},{"decade":1990,"count":73,"avg":3.88,"fives":8,"fourplus":52},{"decade":2000,"count":97,"avg":3.56,"fives":9,"fourplus":51},{"decade":2010,"count":179,"avg":3.53,"fives":15,"fourplus":86},{"decade":2020,"count":162,"avg":3.61,"fives":4,"fourplus":89}];
+
+const DIRECTORS = [
+  {name:"Alfred Hitchcock",nat:"British",avg:4.95,films:[["Vertigo",1958,5],["Rear Window",1954,5],["Notorious",1946,5],["The 39 Steps",1935,5],["Psycho",1960,5],["Shadow of a Doubt",1943,5],["Strangers on a Train",1951,5],["The Birds",1963,5],["North by Northwest",1959,5],["Anatomy of a Murder",1959,4.5]]},
+  {name:"Stanley Kubrick",nat:"American/British",avg:4.5,films:[["Barry Lyndon",1975,5],["2001: A Space Odyssey",1968,5],["Dr. Strangelove",1964,5],["Eyes Wide Shut",1999,4.5],["Full Metal Jacket",1987,4],["The Shining",1980,4],["Paths of Glory",1957,4]]},
+  {name:"Paul Thomas Anderson",nat:"American",avg:4.58,films:[["The Master",2012,5],["There Will Be Blood",2007,5],["Phantom Thread",2017,5],["Boogie Nights",1997,4.5],["Licorice Pizza",2021,4],["Punch-Drunk Love",2002,4]]},
+  {name:"David Lynch",nat:"American",avg:4.58,films:[["Mulholland Drive",2001,5],["Twin Peaks: FWWM",1992,5],["Twin Peaks",1989,5],["The Straight Story",1999,4.5],["Blue Velvet",1986,4],["Eraserhead",1977,4]]},
+  {name:"Ingmar Bergman",nat:"Swedish",avg:4.5,films:[["Persona",1966,5],["Cries and Whispers",1972,5],["Autumn Sonata",1978,4.5],["The Seventh Seal",1957,4.5],["Wild Strawberries",1957,4],["Scenes from a Marriage",1973,4]]},
+  {name:"Coen Brothers",nat:"American",avg:4.31,films:[["Fargo",1996,5],["Inside Llewyn Davis",2013,4.5],["No Country for Old Men",2007,4],["True Grit",2010,4],["Blood Simple",1984,4],["Miller's Crossing",1990,4],["Barton Fink",1991,4],["Burn After Reading",2008,2.5]]},
+  {name:"Jordan Peele",nat:"American",avg:4.67,films:[["Get Out",2017,5],["Nope",2022,5],["Us",2019,4]]},
+  {name:"Spike Lee",nat:"American",avg:4.5,films:[["Do the Right Thing",1989,5],["Malcolm X",1992,5],["BlacKkKlansman",2018,4],["25th Hour",2002,4]]},
+  {name:"Barry Jenkins",nat:"American",avg:4.67,films:[["Moonlight",2016,5],["If Beale Street Could Talk",2018,4.5],["The Underground Railroad",2021,4.5]]},
+  {name:"Wong Kar-wai",nat:"Hong Kong",avg:4.33,films:[["In the Mood for Love",2000,5],["Chungking Express",1994,3],["Happy Together",1997,4]]},
+  {name:"Wes Anderson",nat:"American",avg:4.08,films:[["Rushmore",1998,4.5],["The Royal Tenenbaums",2001,4],["The Grand Budapest Hotel",2014,4],["Isle of Dogs",2018,4],["Asteroid City",2023,4],["Moonrise Kingdom",2012,4]]},
+];
+
+const COUNTRIES = [
+  {name:"United States",flag:"🇺🇸",count:180,fives:44,avg:3.9},
+  {name:"United Kingdom",flag:"🇬🇧",count:38,fives:8,avg:4.1},
+  {name:"France",flag:"🇫🇷",count:22,fives:3,avg:4.0},
+  {name:"Japan",flag:"🇯🇵",count:18,fives:2,avg:4.2},
+  {name:"South Korea",flag:"🇰🇷",count:12,fives:1,avg:4.1},
+  {name:"Sweden",flag:"🇸🇪",count:8,fives:2,avg:4.5},
+  {name:"Italy",flag:"🇮🇹",count:7,fives:0,avg:4.1},
+  {name:"Mexico",flag:"🇲🇽",count:4,fives:1,avg:4.4},
+  {name:"Ireland",flag:"🇮🇪",count:5,fives:1,avg:4.4},
+  {name:"Hong Kong",flag:"🇭🇰",count:3,fives:1,avg:4.3},
+  {name:"Spain",flag:"🇪🇸",count:3,fives:1,avg:4.5},
+  {name:"Germany",flag:"🇩🇪",count:4,fives:0,avg:3.8},
+  {name:"Romania",flag:"🇷🇴",count:2,fives:0,avg:4.0},
+  {name:"USSR/Russia",flag:"🇷🇺",count:2,fives:0,avg:4.3},
+];
+
+const ANIMATED = [
+  {name:"WALL·E",year:2008,rating:5,url:"https://boxd.it/1VEo"},
+  {name:"Ratatouille",year:2007,rating:5,url:"https://boxd.it/27ww"},
+  {name:"Toy Story 4",year:2019,rating:5,url:"https://boxd.it/9ALu"},
+  {name:"Toy Story 3",year:2010,rating:4.5,url:"https://boxd.it/1WRe"},
+  {name:"Spider-Man: Into the Spider-Verse",year:2018,rating:4.5,url:"https://boxd.it/azpY"},
+  {name:"Spider-Man: Across the Spider-Verse",year:2023,rating:4.5,url:"https://boxd.it/kSz4"},
+  {name:"Howl's Moving Castle",year:2004,rating:4.5,url:"https://boxd.it/23De"},
+  {name:"My Neighbor Totoro",year:1988,rating:4.5,url:"https://boxd.it/20eA"},
+  {name:"Wolfwalkers",year:2020,rating:4.5,url:"https://boxd.it/fGrC"},
+  {name:"Soul",year:2020,rating:4.0,url:"https://boxd.it/ioLA"},
+  {name:"Turning Red",year:2022,rating:4.0,url:"https://boxd.it/ipkq"},
+  {name:"Suzume",year:2022,rating:4.0,url:"https://boxd.it/yv7Y"},
+  {name:"Isle of Dogs",year:2018,rating:4.0,url:"https://boxd.it/dZrW"},
+  {name:"Coco",year:2017,rating:4.0,url:"https://boxd.it/bYJQ"},
+  {name:"The Wild Robot",year:2024,rating:4.0,url:"https://boxd.it/IWFy"},
+  {name:"Inside Out 2",year:2024,rating:4.0,url:"https://boxd.it/CFrC"},
+];
+
+const WOMEN = [
+  {name:"Portrait of a Lady on Fire",year:2019,rating:5,director:"Céline Sciamma",url:"https://boxd.it/jkPq"},
+  {name:"I May Destroy You",year:2020,rating:5,director:"Michaela Coel",url:"https://boxd.it/qX9i"},
+  {name:"Anatomy of a Fall",year:2023,rating:4.5,director:"Justine Triet",url:"https://boxd.it/yuDE"},
+  {name:"Aftersun",year:2022,rating:4.5,director:"Charlotte Wells",url:"https://boxd.it/Arw0"},
+  {name:"The Hurt Locker",year:2008,rating:4.5,director:"Kathryn Bigelow",url:"https://boxd.it/1Soi"},
+  {name:"Ratcatcher",year:1999,rating:4.5,director:"Lynne Ramsay",url:"https://boxd.it/1mSg"},
+  {name:"Cléo from 5 to 7",year:1962,rating:4.5,director:"Agnès Varda",url:"https://boxd.it/2agm"},
+  {name:"On Becoming a Guinea Fowl",year:2024,rating:4.5,director:"Rungano Nyoni",url:"https://boxd.it/EXzS"},
+  {name:"Promising Young Woman",year:2020,rating:4,director:"Emerald Fennell",url:"https://boxd.it/loRE"},
+  {name:"Nomadland",year:2020,rating:4,director:"Chloé Zhao",url:"https://boxd.it/lnRy"},
+  {name:"How to Have Sex",year:2023,rating:4,director:"Molly Manning Walker",url:"https://boxd.it/EFIM"},
+  {name:"The Assistant",year:2019,rating:4,director:"Kitty Green",url:"https://boxd.it/neWo"},
+  {name:"Turning Red",year:2022,rating:4,director:"Domee Shi",url:"https://boxd.it/ipkq"},
+  {name:"The Lost Daughter",year:2021,rating:4,director:"Maggie Gyllenhaal",url:"https://boxd.it/kgww"},
+  {name:"The Forty-Year-Old Version",year:2020,rating:4,director:"Radha Blank",url:"https://boxd.it/mYXq"},
+  {name:"Meek's Cutoff",year:2010,rating:4,director:"Kelly Reichardt",url:""},
+];
+
+const DOCS = [
+  {name:"Hoop Dreams",year:1994,rating:5,url:"https://boxd.it/1Opc"},
+  {name:"Stop Making Sense",year:1984,rating:5,url:"https://boxd.it/1ygo"},
+  {name:"The Beatles: Get Back",year:2021,rating:5,url:"https://boxd.it/xo7A"},
+  {name:"Summer of Soul",year:2021,rating:4.5,url:"https://boxd.it/tbhu"},
+  {name:"The Pigeon Tunnel",year:2023,rating:4,url:"https://boxd.it/HIzE"},
+  {name:"The Velvet Underground",year:2021,rating:4,url:"https://boxd.it/jPXA"},
+  {name:"Stephen Curry: Underrated",year:2023,rating:2.5,url:""},
+  {name:"Beatles '64",year:2024,rating:4,url:"https://boxd.it/QMwW"},
+];
+
+const RECENT = [{"name":"12:08 East of Bucharest","year":"2006","rating":4.0,"date":"2026-03-16","rewatch":false},{"name":"Her","year":"2013","rating":5.0,"date":"2026-03-05","rewatch":true},{"name":"The Straight Story","year":"1999","rating":4.5,"date":"2026-02-27","rewatch":false},{"name":"Pickpocket","year":"1959","rating":4.0,"date":"2026-02-23","rewatch":true},{"name":"Malcolm X","year":"1992","rating":5.0,"date":"2026-02-22","rewatch":true},{"name":"On Becoming a Guinea Fowl","year":"2024","rating":4.5,"date":"2026-02-21","rewatch":false},{"name":"Wake Up Dead Man","year":"2025","rating":4.0,"date":"2026-02-16","rewatch":true},{"name":"Cool Runnings","year":"1993","rating":4.0,"date":"2026-02-15","rewatch":true},{"name":"Lost in Translation","year":"2003","rating":4.5,"date":"2026-02-07","rewatch":true},{"name":"Waiting for Guffman","year":"1996","rating":4.5,"date":"2026-02-06","rewatch":true},{"name":"Die My Love","year":"2025","rating":4.0,"date":"2026-02-04","rewatch":false},{"name":"Best in Show","year":"2000","rating":5.0,"date":"2026-01-31","rewatch":true},{"name":"Hamnet","year":"2025","rating":4.5,"date":"2026-01-31","rewatch":false},{"name":"Children of Men","year":"2006","rating":5.0,"date":"2026-01-30","rewatch":true},{"name":"The Testament of Ann Lee","year":"2025","rating":4.0,"date":"2026-01-25","rewatch":false},{"name":"Bob & Carol & Ted & Alice","year":"1969","rating":4.0,"date":"2026-01-21","rewatch":false},{"name":"Roofman","year":"2025","rating":4.0,"date":"2026-01-19","rewatch":false},{"name":"The Naked Gun","year":"2025","rating":4.0,"date":"2026-01-18","rewatch":false},{"name":"Marty Supreme","year":"2025","rating":4.0,"date":"2026-01-10","rewatch":false},{"name":"Boogie Nights","year":"1997","rating":4.5,"date":"2026-01-09","rewatch":true},{"name":"Train Dreams","year":"2025","rating":4.0,"date":"2026-01-08","rewatch":false},{"name":"Spider-Man: Homecoming","year":"2017","rating":4.0,"date":"2026-01-04","rewatch":true},{"name":"28 Years Later","year":"2025","rating":4.0,"date":"2026-01-03","rewatch":false}];
+
+// ── HELPERS ───────────────────────────────────────────────────────────────────
+const S = (id) => document.getElementById(id);
+const tile = (f, i, showNum=false) => `
+  <a class="tile" href="${f.url||'#'}" ${f.url?'target="_blank" rel="noopener"':''}>
+    ${showNum && i < 44 ? `<span class="tile-num">${String(i+1).padStart(2,'0')}</span>` : ''}
+    <div class="tile-t">${f.name}</div>
+    <div class="tile-y">${f.year}</div>
+  </a>`;
+const tileDir = (f) => `
+  <a class="tile" href="${f.url||'#'}" ${f.url?'target="_blank" rel="noopener"':''}>
+    <div class="tile-t">${f.name}</div>
+    <div class="tile-y">${f.year}</div>
+    ${f.director ? `<div class="tile-d">${f.director}</div>` : ''}
+  </a>`;
+const li = (f, cls='') => `
+  <a class="li ${cls}" href="${f.url||'#'}" ${f.url?'target="_blank" rel="noopener"':''}>
+    <div class="li-t">${f.name}</div>
+    <div class="li-y">${f.year}</div>
+  </a>`;
+const starStr = (r) => {
+  const full = Math.floor(r), half = r % 1 >= 0.5;
+  return '★'.repeat(full) + (half ? '½' : '') + '☆'.repeat(5-full-(half?1:0));
+};
+
+// ── DISTRIBUTION ──────────────────────────────────────────────────────────────
+const maxD = Math.max(...DIST.map(d=>d[1]));
+S('dist-chart').innerHTML = DIST.map(([score,count]) => {
+  const pct = (count/maxD*100).toFixed(1);
+  const cls = parseFloat(score)>=4?'h':parseFloat(score)<=2?'l':'m';
+  return `<div class="dr">
+    <div class="ds">${score}</div>
+    <div class="dt"><div class="df ${cls}" data-pct="${pct}"></div></div>
+    <div class="dc">${count}</div>
+  </div>`;
+}).join('');
+
+// ── DECADES ───────────────────────────────────────────────────────────────────
+const maxDec = Math.max(...DECADES.map(d=>d.count));
+S('decade-chart').innerHTML = DECADES.map(d => {
+  const bp = (d.count/maxDec*100).toFixed(1);
+  const fp = d.count>0?(d.fives/d.count*100).toFixed(1):0;
+  return `<div class="decr">
+    <div class="decl">${d.decade}s</div>
+    <div class="dect"><div class="decb" data-pct="${bp}"><div class="dec5" data-pct="${fp}"></div></div></div>
+    <div class="decm"><span class="decavg">${d.avg.toFixed(1)}★</span><span>${d.count}</span></div>
+  </div>`;
+}).join('');
+
+// ── DIRECTORS ─────────────────────────────────────────────────────────────────
+const maxFilms = Math.max(...DIRECTORS.map(d=>d.films.length));
+S('dir-chart').innerHTML = DIRECTORS.map(d => {
+  const pct = (d.films.length/maxFilms*100).toFixed(1);
+  const fivesPct = (d.films.filter(f=>f[2]===5).length/d.films.length*100).toFixed(1);
+  const names = d.films.map(f=>`${f[0]} (${f[1]})`).join(' · ');
+  return `<div class="dir-row">
+    <div><div class="dir-name">${d.name}</div><div class="dir-nat">${d.nat}</div></div>
+    <div class="dir-track">
+      <div class="dir-fill" style="background:var(--gold-d);width:0" data-pct="${pct}">
+        <div style="position:absolute;right:0;top:0;height:100%;background:var(--gold);opacity:.55;width:0;transition:width 1.2s cubic-bezier(.16,1,.3,1)" data-pct="${fivesPct}"></div>
+      </div>
+      <div class="dir-films" style="color:var(--bg)">${names}</div>
+    </div>
+    <div class="dir-meta"><span class="dir-avg">${d.avg.toFixed(1)}</span><span class="dir-cnt">${d.films.length} films</span></div>
+  </div>`;
+}).join('');
+
+// ── COUNTRIES ─────────────────────────────────────────────────────────────────
+S('country-blocks').innerHTML = COUNTRIES.map(c => `
+  <div class="cblock">
+    <div class="cflag">${c.flag}</div>
+    <div class="cnum">${c.count}</div>
+    <div class="cname">${c.name}</div>
+    <div class="cavg">avg ${c.avg.toFixed(1)}★</div>
+  </div>`).join('');
+
+// ── SPECIAL CATEGORIES ────────────────────────────────────────────────────────
+const cats = [
+  {title:"Animated — rated 4★ and above", films:ANIMATED, showDirector:false},
+  {title:"Directed by women — rated 4★ and above", films:WOMEN, showDirector:true},
+  {title:"Documentaries and non-fiction", films:DOCS, showDirector:false},
+  {title:"Horror favorites",films:[
+    {name:"Get Out",year:2017,rating:5,url:"https://boxd.it/eOCm"},
+    {name:"Nope",year:2022,rating:5,url:"https://boxd.it/sDCe"},
+    {name:"Pan's Labyrinth",year:2006,rating:5,url:"https://boxd.it/28No"},
+    {name:"Psycho",year:1960,rating:5,url:"https://boxd.it/2ab2"},
+    {name:"The Birds",year:1963,rating:5,url:"https://boxd.it/2a6m"},
+    {name:"The Night of the Hunter",year:1955,rating:5,url:"https://boxd.it/25HW"},
+    {name:"Twin Peaks: Fire Walk with Me",year:1992,rating:5,url:"https://boxd.it/27Qw"},
+    {name:"The Lighthouse",year:2019,rating:4.5,url:"https://boxd.it/icFU"},
+    {name:"The Silence of the Lambs",year:1991,rating:4.5,url:"https://boxd.it/2aHW"},
+    {name:"Midsommar",year:2019,rating:4,url:"https://boxd.it/jhxe"},
+    {name:"Us",year:2019,rating:4,url:"https://boxd.it/gnV6"},
+    {name:"Suspiria",year:2018,rating:4,url:"https://boxd.it/cioI"},
+  ], showDirector:false},
+];
+
+S('cat-grid').innerHTML = cats.map(cat => `
+  <div class="cat-panel">
+    <div class="cat-title">${cat.title}</div>
+    ${cat.films.map(f => `
+      <a class="cat-item" href="${f.url||'#'}" ${f.url?'target="_blank" rel="noopener"':''}>
+        <div class="ci-t">${f.name}</div>
+        ${cat.showDirector && f.director ? `<div class="ci-d">${f.director}</div>` : ''}
+        <div class="ci-s">${starStr(f.rating)}</div>
+      </a>`).join('')}
+  </div>`).join('');
+
+// ── FILM GRIDS ────────────────────────────────────────────────────────────────
+S('g-five').innerHTML = FIVES.map((f,i) => tile(f,i,true)).join('');
+S('g-half').innerHTML = HALVES.map(f => tile(f,0)).join('');
+S('g-four').innerHTML = FOURS.map(f => li(f)).join('');
+S('g-three').innerHTML = THREES.map(f => li(f,'li-m')).join('');
+
+// 2-star and below combined
+const lowAll = [
+  ...TWO_HALVES.map(f=>({...f,score:'2.5'})),
+  ...TWOS.map(f=>({...f,score:'2'})),
+];
+S('g-low').innerHTML = lowAll.map(f => `
+  <a class="li li-l" href="${f.url||'#'}" ${f.url?'target="_blank" rel="noopener"':''}>
+    <div class="li-t">${f.name}</div>
+    <div class="li-y">${f.year}</div>
+    <div style="font-size:10px;color:var(--cream3);flex-shrink:0">${f.score}★</div>
+  </a>`).join('');
+
+S('g-one').innerHTML = ONES.map(f => li(f,'li-vl')).join('');
+
+// ── RECENT ────────────────────────────────────────────────────────────────────
+const seenR = new Set();
+S('g-recent').innerHTML = RECENT.filter(f => {
+  if (seenR.has(f.name)) return false;
+  seenR.add(f.name); return true;
+}).map(f => {
+  const stars = f.rating===5?'★★★★★':f.rating===4.5?'★★★★½':'★★★★';
+  const d = new Date(f.date);
+  const ds = d.toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});
+  return `<div class="rcard">
+    <div class="rr">${stars}</div>
+    <div class="rt">${f.name}</div>
+    <div class="rm"><span>${f.year}</span><span>·</span><span>${ds}</span>${f.rewatch?'<span class="rwb">rewatch</span>':''}</div>
+  </div>`;
+}).join('');
+
+// ── ANIMATE BARS ──────────────────────────────────────────────────────────────
+setTimeout(() => {
+  document.querySelectorAll('.df').forEach(el => { el.style.width = el.dataset.pct + '%'; });
+  document.querySelectorAll('.decb').forEach(el => {
+    el.style.width = el.dataset.pct + '%';
+    const f = el.querySelector('.dec5');
+    if (f) setTimeout(() => { f.style.width = f.dataset.pct + '%'; }, 250);
+  });
+  document.querySelectorAll('.dir-fill').forEach(el => {
+    el.style.width = el.dataset.pct + '%';
+    const ov = el.querySelector('[data-pct]');
+    if (ov) setTimeout(() => { ov.style.width = ov.dataset.pct + '%'; }, 250);
+  });
+}, 300);
+
+// ── NAV SCROLL HIGHLIGHT ──────────────────────────────────────────────────────
+const navLinks = document.querySelectorAll('.snav a');
+const secIds = ['overview','directors','countries','categories','five-star','four-half','four-star','three-star','two-star','one-star','recent'];
+window.addEventListener('scroll', () => {
+  let cur = 'overview';
+  secIds.forEach(id => {
+    const el = document.getElementById(id);
+    if (el && window.scrollY >= el.offsetTop - 80) cur = id;
+  });
+  navLinks.forEach(a => a.classList.toggle('on', a.getAttribute('href') === '#'+cur));
+}, {passive:true});
+</script>
+</body>
+</html>
