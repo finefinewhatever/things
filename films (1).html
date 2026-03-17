@@ -1,0 +1,1009 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>A Film Collection</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0c0b09;
+    --surface: #151410;
+    --surface2: #1d1b16;
+    --gold: #c9a84c;
+    --gold-dim: #7a6130;
+    --cream: #e8e0ce;
+    --cream-dim: #9a9181;
+    --red: #8b2e2e;
+    --red-bright: #c44;
+    --blue: #2a4a6b;
+    --blue-bright: #5b8fc9;
+    --green: #2d5a3d;
+    --green-bright: #5aab78;
+    --purple: #3d2a5a;
+    --purple-bright: #9b6fd4;
+    --border: rgba(201,168,76,0.15);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--cream);
+    font-family: 'DM Mono', monospace;
+    font-size: 13px;
+    line-height: 1.6;
+    min-height: 100vh;
+  }
+
+  /* grain overlay */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 100;
+    opacity: 0.5;
+  }
+
+  header {
+    padding: 60px 60px 40px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+  }
+
+  h1 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 56px;
+    font-weight: 300;
+    font-style: italic;
+    color: var(--cream);
+    line-height: 1;
+    letter-spacing: -0.5px;
+  }
+
+  h1 span {
+    display: block;
+    font-size: 14px;
+    font-family: 'DM Mono', monospace;
+    font-style: normal;
+    font-weight: 300;
+    color: var(--gold);
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    margin-bottom: 10px;
+  }
+
+  .stats-row {
+    display: flex;
+    gap: 40px;
+    text-align: right;
+  }
+
+  .stat {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .stat-num {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 32px;
+    font-weight: 300;
+    color: var(--gold);
+    line-height: 1;
+  }
+
+  .stat-label {
+    font-size: 10px;
+    color: var(--cream-dim);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-top: 4px;
+  }
+
+  .main {
+    padding: 50px 60px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 40px;
+  }
+
+  .panel {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    padding: 30px;
+    position: relative;
+  }
+
+  .panel.full-width {
+    grid-column: 1 / -1;
+  }
+
+  .panel-title {
+    font-size: 10px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 28px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .panel-title::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+  }
+
+  /* DECADE TIMELINE */
+  .decade-timeline {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .decade-row {
+    display: grid;
+    grid-template-columns: 60px 1fr 28px;
+    align-items: center;
+    gap: 14px;
+  }
+
+  .decade-label {
+    font-size: 11px;
+    color: var(--cream-dim);
+    letter-spacing: 1px;
+    text-align: right;
+  }
+
+  .decade-bar-track {
+    height: 28px;
+    background: var(--surface2);
+    position: relative;
+    overflow: hidden;
+    cursor: pointer;
+  }
+
+  .decade-bar-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--gold-dim), var(--gold));
+    transition: width 1.2s cubic-bezier(0.16,1,0.3,1);
+    width: 0;
+    position: relative;
+  }
+
+  .decade-bar-fill::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: repeating-linear-gradient(
+      90deg,
+      transparent,
+      transparent 8px,
+      rgba(0,0,0,0.15) 8px,
+      rgba(0,0,0,0.15) 9px
+    );
+  }
+
+  .decade-bar-track:hover .film-names {
+    opacity: 1;
+  }
+
+  .film-names {
+    position: absolute;
+    top: 50%;
+    left: 0;
+    transform: translateY(-50%);
+    font-size: 9px;
+    color: var(--cream);
+    opacity: 0;
+    transition: opacity 0.2s;
+    white-space: nowrap;
+    overflow: hidden;
+    font-weight: 400;
+    letter-spacing: 0.5px;
+    padding: 0 8px;
+    /* always sits above the bar fill on a dark bg */
+    background: rgba(20,18,14,0.88);
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+  }
+
+  .decade-count {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 22px;
+    font-weight: 300;
+    color: var(--cream-dim);
+    text-align: center;
+  }
+
+  /* GENRE WHEEL - SVG donut */
+  .genre-chart-wrap {
+    display: flex;
+    align-items: center;
+    gap: 36px;
+  }
+
+  .genre-legend {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    flex: 1;
+  }
+
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    cursor: default;
+    transition: opacity 0.2s;
+  }
+
+  .legend-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  .legend-name {
+    flex: 1;
+    font-size: 11px;
+    color: var(--cream-dim);
+    letter-spacing: 0.5px;
+  }
+
+  .legend-count {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 18px;
+    font-weight: 300;
+    color: var(--cream);
+  }
+
+  /* DIRECTOR SCATTER */
+  .director-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .director-row {
+    display: grid;
+    grid-template-columns: 160px 1fr auto;
+    align-items: center;
+    gap: 14px;
+    padding: 8px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.04);
+  }
+
+  .director-name {
+    font-size: 11px;
+    color: var(--cream);
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 15px;
+    font-weight: 300;
+  }
+
+  .director-films {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+  }
+
+  .film-pill {
+    font-size: 9px;
+    padding: 3px 8px;
+    border: 1px solid var(--border);
+    color: var(--cream-dim);
+    letter-spacing: 0.5px;
+    white-space: nowrap;
+  }
+
+  .director-count {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 22px;
+    font-weight: 300;
+    color: var(--gold);
+    min-width: 24px;
+    text-align: right;
+  }
+
+  /* MOOD MATRIX */
+  .mood-grid {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 2px;
+  }
+
+  .mood-cell {
+    aspect-ratio: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 8px 4px;
+    position: relative;
+    overflow: hidden;
+    cursor: default;
+    transition: transform 0.2s;
+  }
+
+  .mood-cell:hover {
+    transform: scale(1.05);
+    z-index: 10;
+  }
+
+  .mood-cell-title {
+    font-size: 8.5px;
+    text-align: center;
+    line-height: 1.3;
+    position: relative;
+    z-index: 1;
+    font-family: 'DM Mono', monospace;
+  }
+
+  /* COUNTRY MAP */
+  .country-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 2px;
+  }
+
+  .country-block {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 12px 16px;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    min-width: 80px;
+    gap: 6px;
+    transition: border-color 0.2s;
+    cursor: default;
+  }
+
+  .country-block:hover {
+    border-color: var(--gold);
+  }
+
+  .country-flag {
+    font-size: 22px;
+    line-height: 1;
+  }
+
+  .country-name {
+    font-size: 9px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--cream-dim);
+  }
+
+  .country-n {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 24px;
+    font-weight: 300;
+    color: var(--gold);
+    line-height: 1;
+  }
+
+  /* 2010s section */
+  .decade-special {
+    background: var(--surface2);
+    border: 1px solid rgba(201,168,76,0.3);
+  }
+
+  .films-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    gap: 2px;
+  }
+
+  .film-card {
+    padding: 14px 12px;
+    background: var(--surface);
+    border-left: 2px solid transparent;
+    transition: border-color 0.2s, background 0.2s;
+    cursor: default;
+  }
+
+  .film-card:hover {
+    border-left-color: var(--gold);
+    background: var(--surface2);
+  }
+
+  .film-card-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 14px;
+    font-weight: 400;
+    color: var(--cream);
+    line-height: 1.3;
+    margin-bottom: 4px;
+  }
+
+  .film-card-year {
+    font-size: 10px;
+    color: var(--gold-dim);
+    letter-spacing: 1px;
+  }
+
+  .film-card-genre {
+    font-size: 9px;
+    color: var(--cream-dim);
+    margin-top: 4px;
+    letter-spacing: 0.5px;
+  }
+
+  /* suggestions */
+  .suggestions-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2px;
+  }
+
+  .suggestion-card {
+    padding: 20px;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-top: 2px solid var(--border);
+    transition: border-top-color 0.2s;
+    cursor: default;
+  }
+
+  .suggestion-card:hover {
+    border-top-color: var(--gold);
+  }
+
+  .suggestion-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 18px;
+    font-weight: 400;
+    font-style: italic;
+    color: var(--cream);
+    margin-bottom: 4px;
+    line-height: 1.2;
+  }
+
+  .suggestion-meta {
+    font-size: 10px;
+    color: var(--gold);
+    letter-spacing: 1px;
+    margin-bottom: 10px;
+  }
+
+  .suggestion-reason {
+    font-size: 11px;
+    color: var(--cream-dim);
+    line-height: 1.6;
+  }
+
+  .suggestion-because {
+    display: inline;
+    font-size: 9px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--gold-dim);
+    margin-right: 6px;
+  }
+
+  /* animate in */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .panel {
+    animation: fadeUp 0.6s ease both;
+  }
+
+  .panel:nth-child(1) { animation-delay: 0.05s; }
+  .panel:nth-child(2) { animation-delay: 0.1s; }
+  .panel:nth-child(3) { animation-delay: 0.15s; }
+  .panel:nth-child(4) { animation-delay: 0.2s; }
+  .panel:nth-child(5) { animation-delay: 0.25s; }
+  .panel:nth-child(6) { animation-delay: 0.3s; }
+  .panel:nth-child(7) { animation-delay: 0.35s; }
+
+  footer {
+    padding: 30px 60px;
+    border-top: 1px solid var(--border);
+    font-size: 10px;
+    color: var(--cream-dim);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    opacity: 0.5;
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div>
+    <h1><span>A Film Collection</span>Favorites, Mapped</h1>
+  </div>
+  <div class="stats-row">
+    <div class="stat">
+      <span class="stat-num">36</span>
+      <span class="stat-label">Films</span>
+    </div>
+    <div class="stat">
+      <span class="stat-num">7</span>
+      <span class="stat-label">Decades</span>
+    </div>
+    <div class="stat">
+      <span class="stat-num">10</span>
+      <span class="stat-label">Countries</span>
+    </div>
+    <div class="stat">
+      <span class="stat-num">23</span>
+      <span class="stat-label">Directors</span>
+    </div>
+  </div>
+</header>
+
+<div class="main">
+
+  <!-- DECADE TIMELINE -->
+  <div class="panel">
+    <div class="panel-title">By Decade</div>
+    <div class="decade-timeline" id="decades"></div>
+  </div>
+
+  <!-- GENRE DONUT -->
+  <div class="panel">
+    <div class="panel-title">By Genre / Mode</div>
+    <div class="genre-chart-wrap">
+      <svg id="donut" width="160" height="160" viewBox="0 0 160 160"></svg>
+      <div class="genre-legend" id="genre-legend"></div>
+    </div>
+  </div>
+
+  <!-- COUNTRY -->
+  <div class="panel full-width">
+    <div class="panel-title">By Country of Origin</div>
+    <div class="country-list" id="countries"></div>
+  </div>
+
+  <!-- DIRECTOR REPEATS -->
+  <div class="panel full-width">
+    <div class="panel-title">Directors Appearing More Than Once</div>
+    <div class="director-grid" id="directors"></div>
+  </div>
+
+  <!-- MOOD MATRIX -->
+  <div class="panel full-width">
+    <div class="panel-title">Mood / Tone Matrix — hover a cell</div>
+    <div class="mood-grid" id="mood"></div>
+  </div>
+
+  <!-- 2010s -->
+  <div class="panel full-width decade-special">
+    <div class="panel-title">Favorites of the 2010s — 13 Films</div>
+    <div class="films-grid" id="tens"></div>
+  </div>
+
+  <!-- SUGGESTIONS -->
+  <div class="panel full-width">
+    <div class="panel-title">Suggested Next Watches — based on your taste</div>
+    <div class="suggestions-grid" id="suggestions"></div>
+  </div>
+
+</div>
+
+<footer>Collection visualized — hover bars and cells for detail</footer>
+
+<script>
+// ─── DATA ───────────────────────────────────────────────────────────────────
+
+const films = [
+  { title: "The Conversation",         year: 1974, genre: "Thriller",        country: "USA",    director: "Francis Ford Coppola",  mood: "paranoid",  tone: "dark" },
+  { title: "Her",                       year: 2013, genre: "Sci-Fi / Drama",  country: "USA",    director: "Spike Jonze",           mood: "melancholic", tone: "warm" },
+  { title: "Rear Window",              year: 1954, genre: "Thriller",        country: "USA",    director: "Alfred Hitchcock",      mood: "suspenseful", tone: "playful" },
+  { title: "Portrait of a Lady on Fire", year: 2019, genre: "Romance / Drama",country: "France", director: "Céline Sciamma",        mood: "tender",    tone: "quiet" },
+  { title: "Pan's Labyrinth",          year: 2006, genre: "Fantasy / Drama", country: "Spain",  director: "Guillermo del Toro",    mood: "dark",      tone: "lush" },
+  { title: "The Apartment",            year: 1960, genre: "Comedy / Drama",  country: "USA",    director: "Billy Wilder",          mood: "bittersweet","tone": "witty" },
+  { title: "In the Mood for Love",     year: 2000, genre: "Romance / Drama", country: "HK",     director: "Wong Kar-wai",          mood: "longing",   tone: "quiet" },
+  { title: "Vertigo",                  year: 1958, genre: "Thriller",        country: "USA",    director: "Alfred Hitchcock",      mood: "obsessive", tone: "dark" },
+  { title: "Moonlight",                year: 2016, genre: "Drama",           country: "USA",    director: "Barry Jenkins",         mood: "tender",    tone: "quiet" },
+  { title: "Wall-E",                   year: 2008, genre: "Sci-Fi / Anim.",  country: "USA",    director: "Andrew Stanton",        mood: "hopeful",   tone: "warm" },
+  { title: "Boyhood",                  year: 2014, genre: "Drama",           country: "USA",    director: "Richard Linklater",     mood: "tender",    tone: "quiet" },
+  { title: "Roma",                     year: 2018, genre: "Drama",           country: "Mexico", director: "Alfonso Cuarón",        mood: "melancholic","tone": "quiet" },
+  { title: "Phantom Thread",           year: 2017, genre: "Drama",           country: "UK",     director: "Paul Thomas Anderson",  mood: "obsessive", tone: "dark" },
+  { title: "Persona",                  year: 1966, genre: "Drama / Exper.",  country: "Sweden", director: "Ingmar Bergman",        mood: "unsettling","tone": "dark" },
+  { title: "Barry Lyndon",             year: 1975, genre: "Historical / Drama",country: "UK",   director: "Stanley Kubrick",       mood: "cold",      tone: "lush" },
+  { title: "Stand By Me",             year: 1986, genre: "Drama",           country: "USA",    director: "Rob Reiner",            mood: "nostalgic", tone: "warm" },
+  { title: "Do the Right Thing",       year: 1989, genre: "Drama",           country: "USA",    director: "Spike Lee",             mood: "urgent",    tone: "electric" },
+  { title: "Being There",              year: 1979, genre: "Comedy / Satire", country: "USA",    director: "Hal Ashby",             mood: "absurdist", tone: "dry" },
+  { title: "The Graduate",             year: 1967, genre: "Drama / Comedy",  country: "USA",    director: "Mike Nichols",          mood: "alienated", tone: "witty" },
+  { title: "A Woman Under the Influence",year:1974, genre: "Drama",          country: "USA",    director: "John Cassavetes",       mood: "raw",       tone: "intense" },
+  { title: "Nope",                     year: 2022, genre: "Horror / Sci-Fi", country: "USA",    director: "Jordan Peele",          mood: "dread",     tone: "electric" },
+  { title: "Mulholland Drive",         year: 2001, genre: "Mystery / Surreal",country:"USA",    director: "David Lynch",           mood: "unsettling","tone": "dark" },
+  { title: "Sing Street",              year: 2016, genre: "Comedy / Drama",  country: "Ireland",director: "John Carney",           mood: "joyful",    tone: "warm" },
+  { title: "Amadeus",                  year: 1984, genre: "Historical / Drama",country:"USA",   director: "Milos Forman",          mood: "obsessive", tone: "lush" },
+  { title: "Playtime",                 year: 1967, genre: "Comedy",          country: "France", director: "Jacques Tati",          mood: "absurdist", tone: "playful" },
+  { title: "Fargo",                    year: 1996, genre: "Crime / Comedy",  country: "USA",    director: "Coen Brothers",         mood: "absurdist", tone: "dry" },
+  { title: "Get Out",                  year: 2017, genre: "Horror / Thriller",country:"USA",    director: "Jordan Peele",          mood: "dread",     tone: "electric" },
+  { title: "High and Low",             year: 1963, genre: "Crime / Thriller",country:"Japan",   director: "Akira Kurosawa",        mood: "urgent",    tone: "intense" },
+  { title: "The Lobster",              year: 2015, genre: "Sci-Fi / Satire", country: "Greece/UK",director:"Yorgos Lanthimos",    mood: "absurdist", tone: "dry" },
+  { title: "Toy Story 4",              year: 2019, genre: "Anim. / Comedy",  country: "USA",    director: "Josh Cooley",           mood: "bittersweet","tone":"warm" },
+  { title: "Black Orpheus",            year: 1959, genre: "Romance / Drama", country: "Brazil", director: "Marcel Camus",          mood: "joyful",    tone: "lush" },
+  { title: "Notorious",                year: 1946, genre: "Thriller",        country: "USA",    director: "Alfred Hitchcock",      mood: "tense",     tone: "dark" },
+  { title: "The Naked Gun",            year: 1988, genre: "Comedy",          country: "USA",    director: "David Zucker",          mood: "joyful",    tone: "playful" },
+  { title: "Caro Diario",              year: 1993, genre: "Comedy / Docu.",  country: "Italy",  director: "Nanni Moretti",         mood: "reflective","tone":"warm" },
+  { title: "Arrival",                  year: 2016, genre: "Sci-Fi / Drama",  country: "USA",    director: "Denis Villeneuve",      mood: "melancholic","tone":"quiet" },
+  { title: "The Departed",             year: 2006, genre: "Crime / Thriller",country:"USA",     director: "Martin Scorsese",       mood: "urgent",    tone: "intense" },
+];
+
+const tensFilms = [
+  { title: "Her",              year: 2013, genre: "Sci-Fi / Drama" },
+  { title: "Moonlight",        year: 2016, genre: "Drama" },
+  { title: "Boyhood",          year: 2014, genre: "Drama" },
+  { title: "The Lobster",      year: 2015, genre: "Sci-Fi / Satire" },
+  { title: "Roma",             year: 2018, genre: "Drama" },
+  { title: "Phantom Thread",   year: 2017, genre: "Drama" },
+  { title: "Get Out",          year: 2017, genre: "Horror / Thriller" },
+  { title: "Spider-Verse",     year: 2018, genre: "Anim. / Action" },
+  { title: "Annihilation",     year: 2018, genre: "Sci-Fi / Horror" },
+  { title: "Parasite",         year: 2019, genre: "Thriller / Drama" },
+  { title: "Arrival",          year: 2016, genre: "Sci-Fi / Drama" },
+  { title: "The Master",       year: 2012, genre: "Drama" },
+  { title: "Whiplash",         year: 2014, genre: "Drama" },
+];
+
+const suggestions = [
+  {
+    title: "The Tree of Life",
+    meta: "Terrence Malick · 2011 · USA",
+    reason: "Boyhood's meditation on growing up amplified into something cosmic — sprawling, tender, and shot with the same visual ambition as Roma.",
+    because: "Boyhood + Roma + Arrival",
+    streaming: "Netflix",
+    streamColor: "#e50914"
+  },
+  {
+    title: "Yi Yi",
+    meta: "Edward Yang · 2000 · Taiwan",
+    reason: "Wong Kar-wai's romantic longing widened into a whole family's interior lives. Three hours that feel like a decade lived.",
+    because: "In the Mood for Love + Boyhood + Roma",
+    streaming: "Criterion Channel",
+    streamColor: "#c9a84c"
+  },
+  {
+    title: "Burning",
+    meta: "Lee Chang-dong · 2018 · South Korea",
+    reason: "The ambient dread of Mulholland Drive fused with the class anxiety of Parasite. Achingly slow and then suddenly shattering.",
+    because: "Mulholland Drive + The Lobster + Parasite",
+    streaming: "MUBI",
+    streamColor: "#5a9fd4"
+  },
+  {
+    title: "Certified Copy",
+    meta: "Abbas Kiarostami · 2010 · Iran/France",
+    reason: "Portrait of a Lady on Fire's romantic introspection meets the identity-blurring games of Persona. A film that changes on you the moment it ends.",
+    because: "Portrait of a Lady on Fire + Persona + Her",
+    streaming: "Criterion + MUBI",
+    streamColor: "#c9a84c"
+  },
+  {
+    title: "The White Ribbon",
+    meta: "Michael Haneke · 2009 · Germany",
+    reason: "The clinical precision of Barry Lyndon applied to something deeply sinister. Historical but urgently contemporary — fascism observed in its quiet origins.",
+    because: "Barry Lyndon + Do the Right Thing + High and Low",
+    streaming: "Rent only",
+    streamColor: "#666"
+  },
+  {
+    title: "Memories of Murder",
+    meta: "Bong Joon-ho · 2003 · South Korea",
+    reason: "Fargo's black comedy of incompetence collides with genuine moral horror. Bong before Parasite, and possibly better.",
+    because: "Fargo + High and Low + The Departed",
+    streaming: "Rent only",
+    streamColor: "#666"
+  },
+  {
+    title: "The Umbrellas of Cherbourg",
+    meta: "Jacques Demy · 1964 · France",
+    reason: "In the Mood for Love's romantic yearning made into a musical where every word is sung. Formally bold and heartbreaking.",
+    because: "In the Mood for Love + Black Orpheus + Portrait of a Lady on Fire",
+    streaming: "HBO Max + Criterion",
+    streamColor: "#8b5cf6"
+  },
+  {
+    title: "Uncle Boonmee",
+    meta: "Apichatpong Weerasethakul · 2010 · Thailand",
+    reason: "Pan's Labyrinth's logic of magical realism stripped of drama — a film that simply inhabits ghosts and jungle as natural facts. Strange and unforgettable.",
+    because: "Pan's Labyrinth + Mulholland Drive + Arrival",
+    streaming: "Netflix",
+    streamColor: "#e50914"
+  },
+  {
+    title: "Jeanne Dielman",
+    meta: "Chantal Akerman · 1975 · Belgium",
+    reason: "The extreme formal patience of Barry Lyndon meets Cassavetes' intimate observation. One of cinema's great feminist statements, devastating in its stillness. (You've seen this one — included as a reference point.)",
+    because: "Woman Under the Influence + Persona + Barry Lyndon",
+    streaming: "Criterion Channel",
+    streamColor: "#c9a84c",
+    seen: true
+  },
+];
+
+// ─── DECADES ────────────────────────────────────────────────────────────────
+
+const decades = {};
+films.forEach(f => {
+  const d = Math.floor(f.year / 10) * 10;
+  if (!decades[d]) decades[d] = [];
+  decades[d].push(f.title);
+});
+
+const maxCount = Math.max(...Object.values(decades).map(a => a.length));
+const decadeEl = document.getElementById('decades');
+
+Object.keys(decades).sort().forEach(d => {
+  const count = decades[d].length;
+  const pct = (count / maxCount) * 100;
+  const names = decades[d].join(' · ');
+  const row = document.createElement('div');
+  row.className = 'decade-row';
+  row.innerHTML = `
+    <div class="decade-label">${d}s</div>
+    <div class="decade-bar-track">
+      <div class="decade-bar-fill" data-pct="${pct}" style="width:0%"></div>
+      <div class="film-names">${names}</div>
+    </div>
+    <div class="decade-count">${count}</div>
+  `;
+  decadeEl.appendChild(row);
+});
+
+// animate bars after paint
+setTimeout(() => {
+  document.querySelectorAll('.decade-bar-fill').forEach(el => {
+    el.style.width = el.dataset.pct + '%';
+  });
+}, 200);
+
+// ─── GENRE DONUT ────────────────────────────────────────────────────────────
+
+const genreMap = {
+  "Thriller / Crime": { color: "#8b2e2e", films: [] },
+  "Drama":            { color: "#c9a84c", films: [] },
+  "Sci-Fi":           { color: "#5b8fc9", films: [] },
+  "Romance":          { color: "#c47a9b", films: [] },
+  "Comedy":           { color: "#5aab78", films: [] },
+  "Fantasy / Horror": { color: "#9b6fd4", films: [] },
+  "Historical":       { color: "#d4934e", films: [] },
+  "Animation":        { color: "#6bbfc9", films: [] },
+};
+
+const genreBuckets = {
+  "Thriller": "Thriller / Crime", "Crime": "Thriller / Crime",
+  "Drama": "Drama",
+  "Sci-Fi": "Sci-Fi",
+  "Romance": "Romance",
+  "Comedy": "Comedy",
+  "Horror": "Fantasy / Horror", "Fantasy": "Fantasy / Horror", "Surreal": "Fantasy / Horror", "Mystery": "Fantasy / Horror",
+  "Historical": "Historical",
+  "Anim.": "Animation",
+};
+
+films.forEach(f => {
+  const parts = f.genre.split(/[\/,\s]+/);
+  let assigned = false;
+  for (const part of parts) {
+    const key = genreBuckets[part.trim()];
+    if (key) { genreMap[key].films.push(f.title); assigned = true; break; }
+  }
+  if (!assigned) genreMap["Drama"].films.push(f.title);
+});
+
+const genres = Object.entries(genreMap).filter(([,v]) => v.films.length > 0);
+const total = genres.reduce((s, [,v]) => s + v.films.length, 0);
+
+const svg = document.getElementById('donut');
+const cx = 80, cy = 80, R = 68, r = 44;
+let startAngle = -Math.PI / 2;
+const gap = 0.02;
+
+genres.forEach(([name, data]) => {
+  const fraction = data.films.length / total;
+  const angle = fraction * 2 * Math.PI - gap;
+  const endAngle = startAngle + angle;
+
+  const x1 = cx + R * Math.cos(startAngle + gap/2);
+  const y1 = cy + R * Math.sin(startAngle + gap/2);
+  const x2 = cx + R * Math.cos(endAngle);
+  const y2 = cy + R * Math.sin(endAngle);
+  const x3 = cx + r * Math.cos(endAngle);
+  const y3 = cy + r * Math.sin(endAngle);
+  const x4 = cx + r * Math.cos(startAngle + gap/2);
+  const y4 = cy + r * Math.sin(startAngle + gap/2);
+  const large = angle > Math.PI ? 1 : 0;
+
+  const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+  path.setAttribute('d', `M${x1},${y1} A${R},${R} 0 ${large},1 ${x2},${y2} L${x3},${y3} A${r},${r} 0 ${large},0 ${x4},${y4} Z`);
+  path.setAttribute('fill', data.color);
+  path.setAttribute('opacity', '0.85');
+  path.style.transition = 'opacity 0.2s';
+  path.addEventListener('mouseenter', () => path.setAttribute('opacity', '1'));
+  path.addEventListener('mouseleave', () => path.setAttribute('opacity', '0.85'));
+  svg.appendChild(path);
+
+  startAngle = endAngle + gap;
+});
+
+// center text
+const centerText = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+centerText.setAttribute('x', cx); centerText.setAttribute('y', cy - 6);
+centerText.setAttribute('text-anchor', 'middle');
+centerText.setAttribute('fill', '#e8e0ce');
+centerText.setAttribute('font-family', 'Cormorant Garamond, serif');
+centerText.setAttribute('font-size', '26');
+centerText.setAttribute('font-weight', '300');
+centerText.textContent = total;
+svg.appendChild(centerText);
+
+const subText = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+subText.setAttribute('x', cx); subText.setAttribute('y', cy + 12);
+subText.setAttribute('text-anchor', 'middle');
+subText.setAttribute('fill', '#9a9181');
+subText.setAttribute('font-family', 'DM Mono, monospace');
+subText.setAttribute('font-size', '8');
+subText.setAttribute('letter-spacing', '2');
+subText.textContent = 'FILMS';
+svg.appendChild(subText);
+
+const legendEl = document.getElementById('genre-legend');
+genres.forEach(([name, data]) => {
+  const item = document.createElement('div');
+  item.className = 'legend-item';
+  item.innerHTML = `
+    <div class="legend-dot" style="background:${data.color}"></div>
+    <div class="legend-name">${name}</div>
+    <div class="legend-count">${data.films.length}</div>
+  `;
+  legendEl.appendChild(item);
+});
+
+// ─── COUNTRIES ──────────────────────────────────────────────────────────────
+
+const countryFlags = {
+  "USA": ["🇺🇸","United States"],
+  "France": ["🇫🇷","France"],
+  "UK": ["🇬🇧","United Kingdom"],
+  "Japan": ["🇯🇵","Japan"],
+  "HK": ["🇭🇰","Hong Kong"],
+  "Sweden": ["🇸🇪","Sweden"],
+  "Spain": ["🇪🇸","Spain"],
+  "Mexico": ["🇲🇽","Mexico"],
+  "Italy": ["🇮🇹","Italy"],
+  "Brazil": ["🇧🇷","Brazil"],
+  "Ireland": ["🇮🇪","Ireland"],
+  "Greece/UK": ["🇬🇷","Greece/UK"],
+};
+
+const countryCounts = {};
+films.forEach(f => { countryCounts[f.country] = (countryCounts[f.country]||0) + 1; });
+
+const countriesEl = document.getElementById('countries');
+Object.entries(countryCounts).sort(([,a],[,b])=>b-a).forEach(([c, n]) => {
+  const info = countryFlags[c] || ["🌍", c];
+  const block = document.createElement('div');
+  block.className = 'country-block';
+  block.innerHTML = `
+    <div class="country-flag">${info[0]}</div>
+    <div class="country-n">${n}</div>
+    <div class="country-name">${info[1]}</div>
+  `;
+  countriesEl.appendChild(block);
+});
+
+// ─── DIRECTORS ──────────────────────────────────────────────────────────────
+
+const directorMap = {};
+films.forEach(f => {
+  if (!directorMap[f.director]) directorMap[f.director] = [];
+  directorMap[f.director].push(f.title);
+});
+
+const multiDir = Object.entries(directorMap).filter(([,fs])=>fs.length>1).sort(([,a],[,b])=>b.length-a.length);
+const dirEl = document.getElementById('directors');
+
+multiDir.forEach(([name, fs]) => {
+  const row = document.createElement('div');
+  row.className = 'director-row';
+  const pills = fs.map(t => `<span class="film-pill">${t}</span>`).join('');
+  row.innerHTML = `
+    <div class="director-name">${name}</div>
+    <div class="director-films">${pills}</div>
+    <div class="director-count">${fs.length}</div>
+  `;
+  dirEl.appendChild(row);
+});
+
+// ─── MOOD MATRIX ────────────────────────────────────────────────────────────
+
+const moodColors = {
+  "paranoid":   "#3d1a1a",
+  "melancholic":"#1a2535",
+  "suspenseful":"#2a1a3a",
+  "tender":     "#1a2a1a",
+  "dark":       "#1a1a1a",
+  "bittersweet":"#2a2015",
+  "longing":    "#1a1a2a",
+  "obsessive":  "#2a1a1a",
+  "hopeful":    "#152515",
+  "nostalgic":  "#252015",
+  "urgent":     "#2a1a10",
+  "absurdist":  "#1a2520",
+  "alienated":  "#1a1a2a",
+  "raw":        "#2a1515",
+  "dread":      "#151515",
+  "unsettling": "#1a0f2a",
+  "cold":       "#101520",
+  "joyful":     "#152015",
+  "tense":      "#201515",
+  "reflective": "#151a20",
+};
+
+const moodBrights = {
+  "paranoid":"#c44","melancholic":"#5b8fc9","suspenseful":"#9b6fd4",
+  "tender":"#5aab78","dark":"#666","bittersweet":"#c9a84c","longing":"#9b6fd4",
+  "obsessive":"#c44","hopeful":"#5aab78","nostalgic":"#c9a84c","urgent":"#d4934e",
+  "absurdist":"#5aab78","alienated":"#5b8fc9","raw":"#c44","dread":"#555",
+  "unsettling":"#9b6fd4","cold":"#5b8fc9","joyful":"#5aab78","tense":"#c44","reflective":"#c9a84c",
+};
+
+const moodEl = document.getElementById('mood');
+films.forEach(f => {
+  const cell = document.createElement('div');
+  cell.className = 'mood-cell';
+  cell.style.background = moodColors[f.mood] || "#1a1a1a";
+  cell.style.borderLeft = `2px solid ${moodBrights[f.mood] || "#444"}`;
+  cell.title = f.title;
+  cell.innerHTML = `<div class="mood-cell-title" style="color:${moodBrights[f.mood]||'#ccc'}">${f.title}</div>`;
+  moodEl.appendChild(cell);
+});
+
+// ─── 2010s ──────────────────────────────────────────────────────────────────
+
+const tensEl = document.getElementById('tens');
+tensFilms.forEach(f => {
+  const card = document.createElement('div');
+  card.className = 'film-card';
+  card.innerHTML = `
+    <div class="film-card-title">${f.title}</div>
+    <div class="film-card-year">${f.year}</div>
+    <div class="film-card-genre">${f.genre}</div>
+  `;
+  tensEl.appendChild(card);
+});
+
+// ─── SUGGESTIONS ────────────────────────────────────────────────────────────
+
+const suggestEl = document.getElementById('suggestions');
+suggestions.forEach(s => {
+  const card = document.createElement('div');
+  card.className = 'suggestion-card';
+  if (s.seen) card.style.opacity = '0.45';
+  card.innerHTML = `
+    <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:8px;margin-bottom:4px;">
+      <div class="suggestion-title">${s.title}${s.seen ? ' <span style="font-size:10px;font-style:normal;font-family:\'DM Mono\',monospace;color:#666">seen</span>' : ''}</div>
+      <div style="font-size:9px;padding:3px 8px;border:1px solid ${s.streamColor};color:${s.streamColor};white-space:nowrap;letter-spacing:0.5px;margin-top:4px;flex-shrink:0;">${s.streaming}</div>
+    </div>
+    <div class="suggestion-meta">${s.meta}</div>
+    <div class="suggestion-reason">
+      <span class="suggestion-because">because →</span>${s.reason}
+    </div>
+  `;
+  suggestEl.appendChild(card);
+});
+</script>
+</body>
+</html>

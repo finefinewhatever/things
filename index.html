@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>FineFineWhatever</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --cream: #f5f0e8;
+      --warm-white: #faf7f2;
+      --ink: #1c1712;
+      --muted: #7a6f63;
+      --accent: #c0623a;
+      --accent-light: #e8a98a;
+      --border: #d9d0c4;
+      --card-bg: #ffffff;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background-color: var(--warm-white);
+      color: var(--ink);
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 300;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* Subtle grain texture overlay */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: 100;
+      opacity: 0.5;
+    }
+
+    /* ── Header ── */
+    header {
+      padding: 4rem 2rem 2rem;
+      max-width: 860px;
+      margin: 0 auto;
+      opacity: 0;
+      transform: translateY(18px);
+      animation: fadeUp 0.8s ease forwards 0.1s;
+    }
+
+    .site-label {
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 500;
+      font-size: 0.72rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 1.1rem;
+    }
+
+    h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(2.6rem, 6vw, 4.2rem);
+      font-weight: 400;
+      line-height: 1.12;
+      color: var(--ink);
+      margin-bottom: 1.2rem;
+    }
+
+    h1 em {
+      font-style: italic;
+      color: var(--accent);
+    }
+
+    .tagline {
+      font-size: 1.05rem;
+      color: var(--muted);
+      line-height: 1.7;
+      max-width: 520px;
+      font-weight: 300;
+    }
+
+    /* ── Divider ── */
+    .divider {
+      max-width: 860px;
+      margin: 2.5rem auto 0;
+      padding: 0 2rem;
+      opacity: 0;
+      animation: fadeUp 0.8s ease forwards 0.3s;
+    }
+
+    .divider hr {
+      border: none;
+      border-top: 1px solid var(--border);
+    }
+
+    /* ── Cards Grid ── */
+    .grid {
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 2.5rem 2rem 1rem;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1.4rem;
+    }
+
+    .card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 2rem 2rem 1.6rem;
+      text-decoration: none;
+      color: inherit;
+      display: flex;
+      flex-direction: column;
+      gap: 0.8rem;
+      position: relative;
+      overflow: hidden;
+      opacity: 0;
+      transform: translateY(16px);
+      transition: border-color 0.25s ease, box-shadow 0.25s ease, transform 0.25s ease;
+    }
+
+    .card:nth-child(1) { animation: fadeUp 0.7s ease forwards 0.45s; }
+    .card:nth-child(2) { animation: fadeUp 0.7s ease forwards 0.6s; }
+    .card:nth-child(3) { animation: fadeUp 0.7s ease forwards 0.75s; }
+
+    .card::after {
+      content: '';
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      height: 3px;
+      background: var(--accent);
+      transform: scaleX(0);
+      transform-origin: left;
+      transition: transform 0.3s ease;
+    }
+
+    .card:hover {
+      border-color: var(--accent-light);
+      box-shadow: 0 6px 24px rgba(0,0,0,0.07);
+      transform: translateY(-3px);
+    }
+
+    .card:hover::after { transform: scaleX(1); }
+
+    .card-icon {
+      font-size: 1.6rem;
+      line-height: 1;
+      margin-bottom: 0.3rem;
+    }
+
+    .card-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.4rem;
+      font-weight: 600;
+      color: var(--ink);
+    }
+
+    .card-desc {
+      font-size: 0.9rem;
+      color: var(--muted);
+      line-height: 1.65;
+      flex: 1;
+    }
+
+    .card-link {
+      font-size: 0.78rem;
+      font-weight: 500;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-top: 0.6rem;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      transition: gap 0.2s ease;
+    }
+
+    .card:hover .card-link { gap: 0.7rem; }
+
+    /* ── Coming Soon card (placeholder style) ── */
+    .card.placeholder {
+      border-style: dashed;
+      background: transparent;
+      opacity: 0;
+      animation: fadeUp 0.7s ease forwards 0.75s;
+    }
+
+    .card.placeholder:hover {
+      border-color: var(--border);
+      box-shadow: none;
+      transform: none;
+    }
+
+    .card.placeholder::after { display: none; }
+
+    .card.placeholder .card-title,
+    .card.placeholder .card-desc,
+    .card.placeholder .card-icon { opacity: 0.4; }
+
+    /* ── Footer ── */
+    footer {
+      max-width: 860px;
+      margin: 3rem auto 0;
+      padding: 1.5rem 2rem 3rem;
+      border-top: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 1rem;
+      opacity: 0;
+      animation: fadeUp 0.8s ease forwards 0.9s;
+    }
+
+    .footer-name {
+      font-family: 'Playfair Display', serif;
+      font-size: 0.95rem;
+      color: var(--muted);
+      font-style: italic;
+    }
+
+    .footer-github {
+      font-size: 0.78rem;
+      font-weight: 500;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--muted);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+
+    .footer-github:hover { color: var(--accent); }
+
+    /* ── Animation ── */
+    @keyframes fadeUp {
+      to { opacity: 1; transform: translateY(0); }
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <p class="site-label">FineFineWhatever</p>
+    <h1>Things I love.<br><em>Documented.</em></h1>
+    <p class="tagline">A personal corner for tracking what I'm watching, listening to, and occasionally obsessing over.</p>
+  </header>
+
+  <div class="divider"><hr /></div>
+
+  <main class="grid">
+
+    <a class="card" href="films.html">
+      <div class="card-icon">🎬</div>
+      <div class="card-title">Films</div>
+      <p class="card-desc">Watching logs, rankings, and notes on cinema — from Bergman to Pixar and everything in between.</p>
+      <span class="card-link">Explore &rarr;</span>
+    </a>
+
+    <a class="card" href="music.html">
+      <div class="card-icon">🎵</div>
+      <div class="card-title">Music</div>
+      <p class="card-desc">What I've been listening to, albums worth your time, and whatever's been stuck in my head lately.</p>
+      <span class="card-link">Explore &rarr;</span>
+    </a>
+
+    <div class="card placeholder">
+      <div class="card-icon">＋</div>
+      <div class="card-title">More soon</div>
+      <p class="card-desc">Other obsessions, interests, and rabbit holes — to be added as the mood strikes.</p>
+    </div>
+
+  </main>
+
+  <footer>
+    <span class="footer-name">FineFineWhatever</span>
+    <a class="footer-github" href="https://github.com/FineFineWhatever" target="_blank">GitHub ↗</a>
+  </footer>
+
+</body>
+</html>
