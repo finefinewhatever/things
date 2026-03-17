@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>FineFineWhatever</title>
+  <title>Films — FineFineWhatever</title>
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -30,7 +30,6 @@
       overflow-x: hidden;
     }
 
-    /* Subtle grain texture overlay */
     body::before {
       content: '';
       position: fixed;
@@ -41,9 +40,44 @@
       opacity: 0.5;
     }
 
+    /* ── Breadcrumb ── */
+    .breadcrumb {
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 2rem 2rem 0;
+      opacity: 0;
+      animation: fadeUp 0.6s ease forwards 0.05s;
+    }
+
+    .breadcrumb a {
+      font-size: 0.78rem;
+      font-weight: 500;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--muted);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+
+    .breadcrumb a:hover { color: var(--accent); }
+
+    .breadcrumb span {
+      font-size: 0.78rem;
+      color: var(--border);
+      margin: 0 0.5rem;
+    }
+
+    .breadcrumb strong {
+      font-size: 0.78rem;
+      font-weight: 500;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--ink);
+    }
+
     /* ── Header ── */
     header {
-      padding: 4rem 2rem 2rem;
+      padding: 2.5rem 2rem 2rem;
       max-width: 860px;
       margin: 0 auto;
       opacity: 0;
@@ -63,11 +97,11 @@
 
     h1 {
       font-family: 'Playfair Display', serif;
-      font-size: clamp(2.6rem, 6vw, 4.2rem);
+      font-size: clamp(2.2rem, 5vw, 3.4rem);
       font-weight: 400;
       line-height: 1.12;
       color: var(--ink);
-      margin-bottom: 1.2rem;
+      margin-bottom: 1rem;
     }
 
     h1 em {
@@ -76,17 +110,46 @@
     }
 
     .tagline {
-      font-size: 1.05rem;
+      font-size: 1rem;
       color: var(--muted);
       line-height: 1.7;
-      max-width: 520px;
+      max-width: 480px;
       font-weight: 300;
+    }
+
+    .stat-row {
+      display: flex;
+      gap: 2rem;
+      margin-top: 1.4rem;
+      flex-wrap: wrap;
+    }
+
+    .stat {
+      display: flex;
+      flex-direction: column;
+      gap: 0.15rem;
+    }
+
+    .stat-n {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.6rem;
+      font-weight: 400;
+      color: var(--accent);
+      line-height: 1;
+    }
+
+    .stat-l {
+      font-size: 0.7rem;
+      font-weight: 500;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--muted);
     }
 
     /* ── Divider ── */
     .divider {
       max-width: 860px;
-      margin: 2.5rem auto 0;
+      margin: 0 auto;
       padding: 0 2rem;
       opacity: 0;
       animation: fadeUp 0.8s ease forwards 0.3s;
@@ -97,7 +160,7 @@
       border-top: 1px solid var(--border);
     }
 
-    /* ── Cards Grid ── */
+    /* ── Cards ── */
     .grid {
       max-width: 860px;
       margin: 0 auto;
@@ -126,7 +189,6 @@
 
     .card:nth-child(1) { animation: fadeUp 0.7s ease forwards 0.45s; }
     .card:nth-child(2) { animation: fadeUp 0.7s ease forwards 0.6s; }
-    .card:nth-child(3) { animation: fadeUp 0.7s ease forwards 0.75s; }
 
     .card::after {
       content: '';
@@ -147,11 +209,7 @@
 
     .card:hover::after { transform: scaleX(1); }
 
-    .card-icon {
-      font-size: 1.6rem;
-      line-height: 1;
-      margin-bottom: 0.3rem;
-    }
+    .card-icon { font-size: 1.6rem; line-height: 1; margin-bottom: 0.3rem; }
 
     .card-title {
       font-family: 'Playfair Display', serif;
@@ -167,13 +225,21 @@
       flex: 1;
     }
 
+    .card-meta {
+      font-size: 0.78rem;
+      color: var(--muted);
+      border-top: 1px solid var(--border);
+      padding-top: 0.8rem;
+      margin-top: 0.2rem;
+    }
+
     .card-link {
       font-size: 0.78rem;
       font-weight: 500;
       letter-spacing: 0.1em;
       text-transform: uppercase;
       color: var(--accent);
-      margin-top: 0.6rem;
+      margin-top: 0.4rem;
       display: flex;
       align-items: center;
       gap: 0.4rem;
@@ -181,26 +247,6 @@
     }
 
     .card:hover .card-link { gap: 0.7rem; }
-
-    /* ── Coming Soon card (placeholder style) ── */
-    .card.placeholder {
-      border-style: dashed;
-      background: transparent;
-      opacity: 0;
-      animation: fadeUp 0.7s ease forwards 0.75s;
-    }
-
-    .card.placeholder:hover {
-      border-color: var(--border);
-      box-shadow: none;
-      transform: none;
-    }
-
-    .card.placeholder::after { display: none; }
-
-    .card.placeholder .card-title,
-    .card.placeholder .card-desc,
-    .card.placeholder .card-icon { opacity: 0.4; }
 
     /* ── Footer ── */
     footer {
@@ -214,7 +260,7 @@
       flex-wrap: wrap;
       gap: 1rem;
       opacity: 0;
-      animation: fadeUp 0.8s ease forwards 0.9s;
+      animation: fadeUp 0.8s ease forwards 0.75s;
     }
 
     .footer-name {
@@ -224,7 +270,7 @@
       font-style: italic;
     }
 
-    .footer-github {
+    .footer-back {
       font-size: 0.78rem;
       font-weight: 500;
       letter-spacing: 0.08em;
@@ -234,9 +280,8 @@
       transition: color 0.2s;
     }
 
-    .footer-github:hover { color: var(--accent); }
+    .footer-back:hover { color: var(--accent); }
 
-    /* ── Animation ── */
     @keyframes fadeUp {
       to { opacity: 1; transform: translateY(0); }
     }
@@ -244,41 +289,48 @@
 </head>
 <body>
 
+  <nav class="breadcrumb">
+    <a href="index.html">FineFineWhatever</a>
+    <span>/</span>
+    <strong>Films</strong>
+  </nav>
+
   <header>
-    <p class="site-label">FineFineWhatever</p>
-    <h1>Things I love.<br><em>Documented.</em></h1>
-    <p class="tagline">A personal corner for tracking what I'm watching, listening to, and occasionally obsessing over.</p>
+    <p class="site-label">Films</p>
+    <h1>A life<br><em>in cinema.</em></h1>
+    <p class="tagline">Nearly 700 films watched, obsessively rated, and occasionally written about.</p>
+    <div class="stat-row">
+      <div class="stat"><span class="stat-n">699</span><span class="stat-l">Watched</span></div>
+      <div class="stat"><span class="stat-n">638</span><span class="stat-l">Rated</span></div>
+      <div class="stat"><span class="stat-n">3.75</span><span class="stat-l">Avg ★</span></div>
+    </div>
   </header>
 
   <div class="divider"><hr /></div>
 
   <main class="grid">
 
-    <a class="card" href="films.html"> 
-      <div class="card-icon">🎬</div>
-      <div class="card-title">Films</div>
-      <p class="card-desc">Watching logs, rankings, and notes on cinema — from Bergman to Pixar and everything in between.</p>
-      <span class="card-link">Explore &rarr;</span>
+    <a class="card" href="films-full.html">
+      <div class="card-icon">📊</div>
+      <div class="card-title">Full Log</div>
+      <p class="card-desc">The complete picture — ratings breakdown, decade analysis, directors, countries, and every film I've seen.</p>
+      <div class="card-meta">699 films · all ratings · full analytics</div>
+      <span class="card-link">Open &rarr;</span>
     </a>
 
-    <a class="card" href="music.html">
-      <div class="card-icon">🎵</div>
-      <div class="card-title">Music</div>
-      <p class="card-desc">What I've been listening to, albums worth your time, and whatever's been stuck in my head lately.</p>
-      <span class="card-link">Explore &rarr;</span>
+    <a class="card" href="films-favorites.html">
+      <div class="card-icon">★</div>
+      <div class="card-title">Favorites</div>
+      <p class="card-desc">The films I keep coming back to — a curated list of personal favorites across genres and eras.</p>
+      <div class="card-meta">handpicked · no algorithm</div>
+      <span class="card-link">Open &rarr;</span>
     </a>
-
-    <div class="card placeholder">
-      <div class="card-icon">＋</div>
-      <div class="card-title">More soon</div>
-      <p class="card-desc">Other obsessions, interests, and rabbit holes — to be added as the mood strikes.</p>
-    </div>
 
   </main>
 
   <footer>
     <span class="footer-name">FineFineWhatever</span>
-    <a class="footer-github" href="https://github.com/FineFineWhatever" target="_blank">GitHub ↗</a>
+    <a class="footer-back" href="index.html">← Back home</a>
   </footer>
 
 </body>
